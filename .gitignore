@@ -5,3 +5,5 @@ build/billiards-shots-api/
 build/qt-projection/
 prefix/app/
 prefix/native/
+scripts/node-app/node_modules/
+scripts/node-app/package-lock.json
