@@ -1,5 +1,5 @@
 
-export REPOS=$(realpath ../../testing)
+export REPOS=$(realpath ../)
 
 # git clone git@github.com:iconocl4st/billiards-scripts.git
 
