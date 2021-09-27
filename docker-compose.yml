@@ -1,0 +1,41 @@
+version: "3.1"
+services:
+    config:
+        image: "billiards"
+        volumes:
+            - ./prefix/app:/app
+        ports:
+            - "18086:18086"
+        entrypoint: /app/config_api
+    layouts:
+        image: "billiards"
+        volumes:
+            - ./prefix/app:/app
+        ports:
+            - "18083:18083"
+        entrypoint: /app/layouts_api
+    shots:
+        image: "billiards"
+        volumes:
+            - ./prefix/app:/app
+        ports:
+            - "18081:18081"
+        entrypoint: /app/shots_api
+
+        
+#    graphics:
+#        image: "billiards"
+#        volumes:
+#            - ./prefix/app:/app
+#        ports:
+#            - "18082:18082"
+#        entrypoint: /app/graphics_api
+#    attempts:
+#        image: "billiards"
+#        volumes:
+#            - ./prefix/app:/app
+#        ports:
+#            - "18085:18085"
+#        entrypoint: /app/attempts_api
+# projector 18080
+# image 18084
