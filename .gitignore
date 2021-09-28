@@ -2,6 +2,7 @@ build/billiards-config-api/
 build/billiards-layouts-api/
 build/billiards-projection-api/
 build/billiards-shots-api/
+build/billiards-graphics-api/
 build/qt-projection/
 prefix/app/
 prefix/native/

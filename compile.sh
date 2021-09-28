@@ -17,6 +17,7 @@ mkdir -p $PREFIX
 for project in \
 		billiards-layouts-api \
 		billiards-projection-api \
+		billiards-graphics-api \
 		billiards-shots-api \
 		billiards-config-api
 do

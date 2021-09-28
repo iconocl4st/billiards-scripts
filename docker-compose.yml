@@ -21,15 +21,15 @@ services:
         ports:
             - "18081:18081"
         entrypoint: /app/shots_api
-
+    graphics:
+        image: "billiards"
+        volumes:
+            - ./prefix/app:/app
+        ports:
+            - "18082:18082"
+        entrypoint: /app/graphics_api
         
-#    graphics:
-#        image: "billiards"
-#        volumes:
-#            - ./prefix/app:/app
-#        ports:
-#            - "18082:18082"
-#        entrypoint: /app/graphics_api
+
 #    attempts:
 #        image: "billiards"
 #        volumes:
