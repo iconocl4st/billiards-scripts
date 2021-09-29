@@ -14,11 +14,8 @@ cmake_projects = [
 
 
 clean_dirs = [
-	'native/app/qt-projection-api',
-	'prefix/app/config_api',
-	'prefix/app/graphics_api'
-	'prefix/app/layouts_api'
-	'prefix/app/shots_api'
+	'prefix/native',
+	'prefix/app',
 ]
 
 
@@ -59,6 +56,12 @@ default: all
 
 docker:
 	build -t billiards -f docker/Dockerfile docker
+
+.SILENT: run_cmd
+run_cmd:
+	echo "docker-compose -f docker-compose.yml up"
+	echo "./prefix/native/app/qt-projection-api"
+	echo "cd {repos}/billiards-client && npm start"
 
 directories:
 	mkdir -p "{prefix}"
