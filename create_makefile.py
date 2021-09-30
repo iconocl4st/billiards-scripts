@@ -54,14 +54,14 @@ def header_rule(keys):
 	return '''
 default: all
 
-docker:
-	build -t billiards -f docker/Dockerfile docker
+docker-image:
+	docker build -t billiards -f docker/Dockerfile docker
 
 .SILENT: run_cmd
 run_cmd:
-	echo "docker-compose -f docker-compose.yml up"
-	echo "./prefix/native/app/qt-projection-api"
-	echo "cd {repos}/billiards-client && npm start"
+	echo "pushd {scripts} && docker-compose -f docker-compose.yml up"
+	echo "pushd {scripts} && ./prefix/native/app/qt-projection-api"
+	echo "pushd {repos}/billiards-client && npm start"
 
 directories:
 	mkdir -p "{prefix}"
@@ -80,7 +80,8 @@ update-makefile:
 
 def project_rule(keys):
 	return '''
-{project-name}: directories
+.SILENT: {project-name}
+{project-name}: directories docker-image
 	mkdir -p {build}/{project}
 	docker run --rm \\
 		-v "{repos}/{project}/":/source \\
@@ -104,6 +105,13 @@ def project_rule(keys):
 		--workdir=/build \\
 		billiards \\
 		make DESTDIR=/app install
+
+.SILENT: native-{project-name}
+native-{project-name}: directories docker-image
+	mkdir -p "{build}/native/{project}"
+	cd "{repos}/{project}" && REPOS="{repos}" cmake -DCMAKE_BUILD_TYPE=Debug -B "{build}/native/{project}"
+	cd "{build}/native/{project}" && make
+	cd "{build}/native/{project}" && DESTDIR="{prefix}/native/" make install
 '''.format(**keys)
 
 

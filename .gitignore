@@ -5,6 +5,7 @@ build/billiards-projection-api/
 build/billiards-shots-api/
 build/billiards-graphics-api/
 build/qt-projection/
+build/native/
 prefix/app/
 prefix/native/
 scripts/node-app/node_modules/

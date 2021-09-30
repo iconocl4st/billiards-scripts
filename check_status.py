@@ -28,7 +28,21 @@ def get_repos_dir():
 	return os.path.realpath(repos_dir)
 
 
-def print_status(repo_dir, subdir):
+def should_commit_file(p):
+	if p.find('src/') == 0:
+		return True
+	for whitelist in [
+		'CMakeLists.txt',
+		'.gitignore',
+		'check_status.py',
+		'create_makefile.py',
+	]:
+		if whitelist in p:
+			return True
+	return False
+	
+
+def print_status(repo_dir):
 	repo = Repo(repo_dir)
 	
 	modified = [item.a_path for item in repo.index.diff(None)]
@@ -52,7 +66,7 @@ def print_status(repo_dir, subdir):
 	
 	print('#\n#')
 	
-	return [p for p in untracked + modified if p.find(subdir) == 0]
+	return [p for p in untracked + modified if should_commit_file(p)]
 
 
 def main(message):
@@ -61,20 +75,21 @@ def main(message):
 	for directory in repos:
 		repo_dir = os.path.join(repos_dir, directory)
 		
-		srcs = print_status(repo_dir, subdir='src/')
+		srcs = print_status(repo_dir)
 		if len(srcs) == 0:
 			continue
 		
 		cmds.append('pushd "' + repo_dir + '"')
 		for src in srcs:
 			cmds.append('git add "' + src + '"')
-		cmds.append('git commit -m "' + message + '"')
-		cmds.append('git push')
+		if message is not None:
+			cmds.append('git commit -m "' + message + '"')
+			cmds.append('git push')
 		cmds.append('popd')
 	
-	if message:
-		for cmd in cmds:
-			print(cmd)
+	
+	for cmd in cmds:
+		print(cmd)
 
 
 if __name__ == '__main__':
