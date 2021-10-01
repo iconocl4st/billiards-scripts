@@ -52,6 +52,7 @@ def project_name(project):
 
 def header_rule(keys):
 	return '''
+MAKEFLAGS += -j5
 default: all
 
 docker-image:
