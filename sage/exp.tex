@@ -1,0 +1,231 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage[total={6in, 8in}]{geometry}
+\begin{document}
+
+We want to solve:
+
+
+Let $o$ be the object ball,
+$p$ be the point we are solving for, 
+$c$ be the source,
+$d$ be the destination,
+$n$ be the normal path.
+
+We want to solve
+\begin{align*}
+\|p - o\| = r \\
+n^T(p - o) = 0 \\
+v^1 = p + t(p - s) \\
+v^2 = p + s n \\
+\frac 2 7 v^1 + \frac 2 5 v^2 = d \\
+(v^1 - v^2)^T(v^2) = 0
+\end{align*}
+
+Let 
+\begin{align*}
+p \gets p - o \\
+d \gets d - o \\
+\end{align*}
+
+
+We can let
+\begin{align*}
+n_0 = \pm\frac 1 r p_0 \\
+n_1 = \mp\frac 1 r p_1
+\end{align*}
+or
+so that 
+\begin{align*}
+n^Tp = 0 \\
+n^Tn = 1
+\end{align*}
+
+We find
+\begin{align*}
+\|p\| = r \\
+n^Tp = 0 \\
+n^Tn = 1 \\
+v^1 = p + t(p - c) \\
+v^2 = p + s n \\
+\alpha v^1 + (1 - \alpha) v^2 = p + d \\
+(v^1 - v^2)^T(v^2 - p) = 0
+\end{align*}
+
+Solve for $s$:
+
+\begin{align*}
+(v^1 - v^2)^T(v^2 - p) = 0 \\
+(p + t(p - c) - p - s n)^T(p + s n - p) = 0 \\
+st(p - c)^Tn + s^2 n^Tn = 0 \\
+t(p - c)^Tn + s = 0 \\
+s = t(c - p)^Tn
+\end{align*}
+
+
+
+Plug this in:
+\begin{align*}
+\alpha v^1 + (1 - \alpha) v^2 = p + d \\
+\alpha \left(p + t(p - c)\right) + (1 - \alpha) \left(p + s n\right) = p + d \\
+\alpha t(p - c) + (1 - \alpha) s n = d \\
+\alpha t(p - c) + (1 - \alpha) t(c - p)^Tn n = d \\
+\end{align*}
+
+
+Now we want:
+\begin{align*}
+\|p\| = r \\
+\alpha (p - c) + (1 - \alpha) (c - p)^Tn n = \frac 1 t d \\
+\end{align*}
+or
+\begin{align*}
+p_1 = \pm \sqrt{r - p_0} \\
+\alpha (p_0 - c_0) + (1 - \alpha) (c - p)^Tn n_0 = \frac 1 t d_0 \\
+\alpha (p_1 - c_1) + (1 - \alpha) (c - p)^Tn n_1 = \frac 1 t d_1 \\
+\end{align*}
+
+We plug in
+\begin{align*}
+(c - p)^Tn = c_0 n_0 + c_1 n_1 - n_0 p_0 - n_1 p_1
+\end{align*}
+
+\begin{align*}
+\alpha (p_0 - c_0) + (1 - \alpha) \left(c_0 n_0^2 + c_1 n_1 n_0 - n_0^2 p_0 - n_1 n_0 p_1\right) = \frac 1 t d_0 \\
+\alpha (p_1 - c_1) + (1 - \alpha) \left(c_0 n_0n_1 + c_1 n_1n_1 - n_0n_1 p_0 - n_1^2 p_1\right) = \frac 1 t d_1 \\
+\end{align*}
+or
+\begin{align*}
+\left[\alpha (p_0 - c_0) + (1 - \alpha) \left(c_0 n_0^2 + c_1 n_1 n_0 - n_0^2 p_0 - n_1 n_0 p_1\right)\right] \frac{d_1}{d_0} = \frac 1 t d_1 \\
+\alpha (p_1 - c_1) + (1 - \alpha) \left(c_0 n_0n_1 + c_1 n_1n_1 - n_0n_1 p_0 - n_1^2 p_1\right) = \frac 1 t d_1 \\
+\end{align*}
+so that
+
+\begin{align*}
+\left[\alpha (p_0 - c_0) + (1 - \alpha) \left(c_0 n_0^2 + c_1 n_1 n_0 - n_0^2 p_0 - n_1 n_0 p_1\right)\right] \frac{d_1}{d_0} \\
+= \alpha (p_1 - c_1) + (1 - \alpha) \left(c_0 n_0n_1 + c_1 n_1^2 - n_0n_1 p_0 - n_1^2 p_1\right) \\
+\end{align*}
+
+
+\begin{align*}
+\left[\alpha (p_0 - c_0) + (1 - \alpha) \left(n_0^2 \left(c_0 - p_0\right)  + c_1 n_0n_1 - p_1n_0 n_1\right)\right] \frac{d_1}{d_0} \\
+= \alpha (p_1 - c_1) + (1 - \alpha) \left(n_1^2\left(c_1 -  p_1\right)+ c_0n_0n_1 - p_0n_0n_1\right) \\
+\end{align*}
+
+\begin{align*}
+\alpha\left[\left(p_0 - c_0\right) \frac{d_1}{d_0} -p_1 + c_1\right] \\
++ (1 - \alpha) \left[
+	n_0^2 \left(c_0 - p_0\right) \frac{d_1}{d_0} - n_1^2\left(c_1 -  p_1\right)
+\right] \\
++ (1 - \alpha) \left[
+	\left(c_1 n_0n_1 - p_1n_0 n_1\right)\frac{d_1}{d_0} - \left(c_0n_0n_1 - p_0n_0n_1\right)
+\right] = 0
+\end{align*}
+
+with $\beta = \frac{d_1}{d_0}$
+\begin{align*}
+\alpha\left[\left(p_0 - c_0\right) \beta -p_1 + c_1\right] \\
++ (1 - \alpha) \left[
+	n_0^2 \left(c_0 - p_0\right) \beta - n_1^2\left(c_1 -  p_1\right)
+\right] \\
++ (1 - \alpha) \left[
+	\left(c_1 n_0n_1 - p_1n_0 n_1\right)\beta - \left(c_0n_0n_1 - p_0n_0n_1\right)
+\right] = 0
+\end{align*}
+
+
+
+% n_0 = \pm\frac 1 r p_0 \\
+% n_1 = \mp\frac 1 r p_1
+
+with $\beta = \frac{d_1}{d_0}$
+\begin{align*}
+\alpha\left[\left(p_0 - c_0\right) \beta -p_1 + c_1\right] \\
++ \frac 1 {r^2}(1 - \alpha) \left[
+	 p_0^2 \left(c_0 - p_0\right) \beta -  p_1^2\left(c_1 -  p_1\right)
+\right] \\
++ \frac 1 {r^2}(1 - \alpha) \left[
+	\left( c_1 p_0 p_1 - p_0 p_1^2\right)\beta - \left(c_0p_0p_1 - p_0^2p_1\right)
+\right] = 0
+\end{align*}
+
+
+\begin{align*}
+\alpha\left[\left(p_0 - c_0\right) \beta -p_1 + c_1\right] \\
++ \frac 1 {r^2}(1 - \alpha) \left[
+	 p_0^2 \left(c_0 - p_0\right) \beta -  p_1^2\left(c_1 -  p_1\right)
+\right] \\
++ \frac 1 {r^2}(1 - \alpha) p_0p_1\left[
+	\left( c_1 - p_1\right)\beta - \left(c_0 - p_0\right)
+\right] = 0
+\end{align*}
+
+
+\begin{align*}
+\alpha\left[\left(p_0 - c_0\right) \beta -p_1 + c_1\right] \\
++ \frac 1 {r^2}(1 - \alpha) \left[
+	 p_0^2 \left(c_0 - p_0\right) \beta -  p_1^2\left(c_1 -  p_1\right)
+\right] \\
++ \frac 1 {r^2}(1 - \alpha) p_0p_1\left[
+	\left( c_1 - p_1\right)\beta - \left(c_0 - p_0\right)
+\right] = 0
+\end{align*}
+
+% r - p_0
+\begin{align*}
+\alpha\left[\left(p_0 - c_0\right) \beta -p_1 + c_1\right] + \frac 1 {r^2}(1 - \alpha) \cdot\\
+\left[
+	 p_0^2 \left(c_0 - p_0\right) \beta -  p_1^2\left(c_1 -  p_1\right)
+	+ p_0p_1\left[
+		\left( c_1 - p_1\right)\beta - \left(c_0 - p_0\right)
+	\right]
+\right] = 0
+\end{align*}
+
+
+In sage:
+\begin{verbatim}
+p0, c0, c1, a, b, r = var('p0 c0 c1 a b r')
+p1 = sqrt(1 - p0 ** 2)
+sols = solve([
+    a * ((p0 - c0) * b - p1 + c1) + 1 / r ** 2 * (1 - a) * (
+            p0 ** 2 * (c0 - p0) * b - p1 ** 2 * (c1 - p1) 
+            + p0 * p1 * ((c1 - p1) * b - (c0 - p0))
+    ),],
+    p0
+)
+\end{verbatim}
+
+% \tiny
+% \begin{align*}
+% p_{0} = \frac{a b - {\left({\left(a - 1\right)} b c_{1} - {\left(a - 1\right)} c_{0}\right)} \sqrt{-p_{0}^{2} + 1} - \sqrt{a^{2} b^{2} + 2 \, {\left(a^{2} - 2 \, a + 1\right)} b c_{0} c_{1} - {\left(4 \, {\left(a - 1\right)} b^{2} - a^{2} + 2 \, a - 1\right)} c_{0}^{2} + {\left({\left(a^{2} - 2 \, a + 1\right)} b^{2} + 4 \, a^{2} - 4 \, a\right)} c_{1}^{2} - {\left({\left(a^{2} - 2 \, a + 1\right)} b^{2} c_{1}^{2} - 2 \, {\left(a^{2} - 2 \, a + 1\right)} b c_{0} c_{1} + {\left(a^{2} - 2 \, a + 1\right)} c_{0}^{2}\right)} p_{0}^{2} - 2 \, {\left({\left(a^{2} - a\right)} b c_{0} + {\left({\left(a^{2} - a\right)} b^{2} + 2 \, a^{2} - 2 \, a\right)} c_{1}\right)} \sqrt{-p_{0}^{2} + 1}}}{2 \, {\left({\left(a - 1\right)} b c_{0} + {\left(a - 1\right)} c_{1}\right)}}, \\
+% p_{0} = \frac{a b - {\left({\left(a - 1\right)} b c_{1} - {\left(a - 1\right)} c_{0}\right)} \sqrt{-p_{0}^{2} + 1} + \sqrt{a^{2} b^{2} + 2 \, {\left(a^{2} - 2 \, a + 1\right)} b c_{0} c_{1} - {\left(4 \, {\left(a - 1\right)} b^{2} - a^{2} + 2 \, a - 1\right)} c_{0}^{2} + {\left({\left(a^{2} - 2 \, a + 1\right)} b^{2} + 4 \, a^{2} - 4 \, a\right)} c_{1}^{2} - {\left({\left(a^{2} - 2 \, a + 1\right)} b^{2} c_{1}^{2} - 2 \, {\left(a^{2} - 2 \, a + 1\right)} b c_{0} c_{1} + {\left(a^{2} - 2 \, a + 1\right)} c_{0}^{2}\right)} p_{0}^{2} - 2 \, {\left({\left(a^{2} - a\right)} b c_{0} + {\left({\left(a^{2} - a\right)} b^{2} + 2 \, a^{2} - 2 \, a\right)} c_{1}\right)} \sqrt{-p_{0}^{2} + 1}}}{2 \, {\left({\left(a - 1\right)} b c_{0} + {\left(a - 1\right)} c_{1}\right)}}
+% \end{align*}
+
+
+
+
+% 
+% One case is
+% 
+% % n_0 = (\pm\frac 1 r p_0)
+% % n_1 = (\mp\frac 1 r \pm \sqrt{r - p_0})
+% % p_1 = (\pm \sqrt{r - p_0})
+% \begin{align*}
+% \left[\alpha (p_0 - c_0) + (1 - \alpha) \left(c_0 n_0^2 + c_1 n_1 n_0 - n_0^2 p_0 - n_1 n_0 p_1\right)\right] 
+% \frac{d_1}{d_0} \\
+% = \alpha (p_1 - c_1) + (1 - \alpha) \left(c_0 n_0n_1 + c_1 n_1^2 - n_0n_1 p_0 - n_1^2 p_1\right) \\
+% \end{align*}
+% 
+% 
+% 
+% 
+% \begin{align*}
+% \alpha (p_0 - c_0)\frac{d_1}{d_0} + (1 - \alpha) \\
+% \left(c_0 (\pm\frac 1 r p_0)^2 + c_1 (\mp\frac 1 r (\pm \sqrt{r - p_0})) (\pm\frac 1 r p_0) - (\pm\frac 1 r p_0)^2 p_0 - (\mp\frac 1 r (\pm \sqrt{r - p_0})) (\pm\frac 1 r p_0) (\pm \sqrt{r - p_0})\right)\frac{d_1}{d_0} \\
+% = \alpha ((\pm \sqrt{r - p_0}) - c_1) + (1 - \alpha) \\
+% \left(c_0 (\pm\frac 1 r p_0)(\mp\frac 1 r (\pm \sqrt{r - p_0})) + c_1 (\mp\frac 1 r (\pm \sqrt{r - p_0}))^2 - (\pm\frac 1 r p_0)(\mp\frac 1 r (\pm \sqrt{r - p_0})) p_0 - (\mp\frac 1 r (\pm \sqrt{r - p_0}))^2 (\pm \sqrt{r - p_0})\right) \\
+% \end{align*}
+
+
+\end{document}

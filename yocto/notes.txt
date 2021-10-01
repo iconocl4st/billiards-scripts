@@ -1,0 +1,23 @@
+export YOCTO_DIR=/mnt/1f0ab4b3-c472-49e1-92d8-c0b5664f7fdb/ProjectsForFun/Pool/repos/billiards-scripts/yocto
+
+cd $YOCTO_DIR
+. sources/poky/oe-init-build-env
+bitbake qt5-image
+bitbake billiards-image
+
+cp $YOCTO_DIR/conf/bblayers.conf $YOCTO_DIR/build/conf/
+cp $YOCTO_DIR/conf/local.conf $YOCTO_DIR/build/conf/
+
+
+
+
+
+
+reverse:
+cp $YOCTO_DIR/build/conf/bblayers.conf $YOCTO_DIR/conf/
+cp $YOCTO_DIR/build/conf/local.conf $YOCTO_DIR/conf/
+
+
+TODO:
+billiardsfe references local repo
+meta-billiards/image/ references directory structure

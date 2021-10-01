@@ -11,3 +11,9 @@ prefix/native/
 scripts/node-app/node_modules/
 scripts/node-app/package-lock.json
 old
+yocto/output/
+yocto/sources/
+yocto/build/bitbake-cookerdaemon.log
+yocto/build/cache/
+yocto/build/conf/templateconf.cfg
+yocto/build/bitbake.lock
