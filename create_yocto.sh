@@ -19,4 +19,4 @@ popd
 
 
 mkdir -p yocto/build
-cp -r yocto/conf yocto/build/
+cd yocto

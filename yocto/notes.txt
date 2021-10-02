@@ -5,6 +5,67 @@ cd $YOCTO_DIR
 bitbake qt5-image
 bitbake billiards-image
 
+
+
+cd sources/meta-rpi/scripts/
+
+sudo mkdir ../../../mount
+sudo umount /dev/sdc1
+sudo umount /dev/sdc1
+
+cd sources/meta-rpi/scripts/
+sudo ./mk2parts.sh sdc
+
+sudo mkdir -p /media/card
+
+cd sources/meta-rpi/scripts/
+
+
+# bootfs
+sudo umount /dev/sdc1
+sudo umount /dev/sdc2
+export OETMP=/mnt/1f0ab4b3-c472-49e1-92d8-c0b5664f7fdb/ProjectsForFun/Pool/repos/billiards-scripts/yocto/output/tmp_dir
+export MACHINE=raspberrypi3
+sudo MACHINE=raspberrypi3 OETMP=/mnt/1f0ab4b3-c472-49e1-92d8-c0b5664f7fdb/ProjectsForFun/Pool/repos/billiards-scripts/yocto/output/tmp_dir ./copy_boot.sh sdc
+
+
+# rootfs
+sudo umount /dev/sdc1
+sudo umount /dev/sdc2
+export OETMP=/mnt/1f0ab4b3-c472-49e1-92d8-c0b5664f7fdb/ProjectsForFun/Pool/repos/billiards-scripts/yocto/output/tmp_dir
+export MACHINE=raspberrypi3
+sudo MACHINE=raspberrypi3 OETMP=/mnt/1f0ab4b3-c472-49e1-92d8-c0b5664f7fdb/ProjectsForFun/Pool/repos/billiards-scripts/yocto/output/tmp_dir ./copy_rootfs.sh sdc billiards
+
+
+chmod +x /app/*
+vi /etc/wpa_supplicant.conf
+
+
+iptables -A INPUT -p tcp --dport 18080 -j ACCEPT
+iptables -A INPUT -p tcp --dport 18081 -j ACCEPT
+iptables -A INPUT -p tcp --dport 18082 -j ACCEPT
+iptables -A INPUT -p tcp --dport 18083 -j ACCEPT
+iptables -A INPUT -p tcp --dport 18084 -j ACCEPT
+iptables -A INPUT -p tcp --dport 18085 -j ACCEPT
+iptables -A INPUT -p tcp --dport 18086 -j ACCEPT
+
+
+
+mkdir tmp
+pushd tmp
+cp $(realpath /mnt/1f0ab4b3-c472-49e1-92d8-c0b5664f7fdb/ProjectsForFun/Pool/repos/billiards-scripts/yocto/output/tmp_dir/deploy/images/raspberrypi3/billiards-image-raspberrypi3.tar.xz
+) .
+tar xf billiards-*
+scp ./app/qt-projection-api root@10.0.0.160:/app/qt-projection-api
+popd
+rm -rf tmp
+
+
+
+
+
+
+
 cp $YOCTO_DIR/conf/bblayers.conf $YOCTO_DIR/build/conf/
 cp $YOCTO_DIR/conf/local.conf $YOCTO_DIR/build/conf/
 
@@ -21,3 +82,4 @@ cp $YOCTO_DIR/build/conf/local.conf $YOCTO_DIR/conf/
 TODO:
 billiardsfe references local repo
 meta-billiards/image/ references directory structure
+put build in docker?
