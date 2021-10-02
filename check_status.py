@@ -37,6 +37,7 @@ def should_commit_file(p):
 		'.gitignore',
 		'check_status.py',
 		'create_makefile.py',
+		'LICENSE',
 	]:
 		if whitelist in p:
 			return True
