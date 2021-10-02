@@ -42,7 +42,7 @@ def get_paths():
 		'prefix': os.path.join(scripts_dir, 'prefix'),
 		'build': os.path.join(scripts_dir, 'build'),
 		'makefile': os.path.join(scripts_dir, 'Makefile'),
-		'common': os.path.join(repos_dir, 'billiards-common/src/common')
+		'common': os.path.join(repos_dir, 'billiards-common/src/billiards_common')
 	}
 
 
@@ -93,7 +93,7 @@ def project_rule(keys):
 	docker run --rm \\
 		-v "{repos}/{project}/":/source \\
 		-v "{build}/{project}/":/build \\
-		-v "{common}/":/usr/include/common \\
+		-v "{common}/":/usr/include/billiards_common \\
 		--workdir=/build \\
 		billiards \\
 		make
@@ -101,7 +101,7 @@ def project_rule(keys):
 	docker run --rm \\
 		-v "{repos}/{project}/":/source \\
 		-v "{build}/{project}/":/build \\
-		-v "{common}/":/usr/include/common \\
+		-v "{common}/":/usr/include/billiards_common \\
 		-v "{prefix}/":/app \\
 		--workdir=/build \\
 		billiards \\
