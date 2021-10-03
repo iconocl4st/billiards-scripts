@@ -1,15 +1,57 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.18)
 project(idea)
 
 set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_VERBOSE_MAKEFILE on)
-
+#set(CMAKE_VERBOSE_MAKEFILE on)
 
 add_subdirectory(billiards-common)
 add_subdirectory(billiards-layouts-api)
 add_subdirectory(billiards-projection-api)
 add_subdirectory(billiards-shots-api)
+add_subdirectory(billiards-graphics-api)
+
+find_package(Boost COMPONENTS system REQUIRED)
+
+add_executable(
+        run_fragment
+
+        ${CMAKE_CURRENT_SOURCE_DIR}/run_fragments/run_fragment.cpp
+#        ${CMAKE_CURRENT_SOURCE_DIR}/billiards-shots-api/src/math/orient_pocket_gen/gen_sol_0.c
+#        ${CMAKE_CURRENT_SOURCE_DIR}/billiards-shots-api/src/math/orient_pocket_gen/gen_sol_1.c
+#        ${CMAKE_CURRENT_SOURCE_DIR}/billiards-shots-api/src/math/orient_pocket_gen/gen_sol_2.c
+#        ${CMAKE_CURRENT_SOURCE_DIR}/billiards-shots-api/src/math/orient_pocket_gen/gen_sol_3.c
+
+)
+
+target_include_directories(
+        run_fragment
+
+        PUBLIC
+
+        ${PROJECT_SOURCE_DIR}/src
+        $ENV{REPOS}/billiards-attempts-api/src
+        $ENV{REPOS}/billiards-common/src
+        $ENV{REPOS}/billiards-config-api/src
+        $ENV{REPOS}/billiards-graphics-api/src
+        $ENV{REPOS}/billiards-layouts/src
+        $ENV{REPOS}/billiards-projection-api/src
+        $ENV{REPOS}/billiards-shots-api/src
+)
+
 
 # TODO: rename shots and gphx
-# TODO: use Dimensions....
+# TODO: use Dimensions
 # TODO: make color use uint8_t
+# TODO: make consistent enums
+# TODO: make consistent serialization from subclasses
+# TODO: Maybe remove the destination?
+# TODO: check if shot is possible
+# TODO: Make necessary elements parsed by json
+# TODO: Make the layout fit the table
+# TODO: Place the pocket points in a nicer place
+# TODO: Only have one ghost ball (the center)
+# TODO: params vs table vs locations
+# TODO: parallelize build
+# TODO: Build could be faster if the crow server had a wrapper
+# TODO: orient pocket has a bug where it widens the angle...
+# TODO: tests
