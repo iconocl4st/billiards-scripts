@@ -17,3 +17,6 @@ yocto/build/bitbake-cookerdaemon.log
 yocto/build/cache/
 yocto/build/conf/templateconf.cfg
 yocto/build/bitbake.lock
+ide/cmake-build-debug/
+ide/cmake-build-debug-coverage/
+ide/.idea/

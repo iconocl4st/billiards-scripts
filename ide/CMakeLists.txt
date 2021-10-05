@@ -11,6 +11,39 @@ add_subdirectory(billiards-shots-api)
 add_subdirectory(billiards-graphics-api)
 
 find_package(Boost COMPONENTS system REQUIRED)
+find_package(Catch2 2 REQUIRED)
+
+add_executable(
+        run_tests
+
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_polynomials.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_systems.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_glance.cpp
+)
+target_link_libraries(run_tests PRIVATE Catch2::Catch2WithMain)
+target_include_directories(
+        run_tests
+
+        PUBLIC
+
+        ${PROJECT_SOURCE_DIR}/src
+
+#        ${CMAKE_CURRENT_SOURCE_DIR}/billiards-attempts-api/src
+#        ${CMAKE_CURRENT_SOURCE_DIR}/billiards-common/src
+#        ${CMAKE_CURRENT_SOURCE_DIR}/billiards-config-api/src
+#        ${CMAKE_CURRENT_SOURCE_DIR}/billiards-graphics-api/src
+#        ${CMAKE_CURRENT_SOURCE_DIR}/billiards-layouts/src
+#        ${CMAKE_CURRENT_SOURCE_DIR}/billiards-projection-api/src
+#        ${CMAKE_CURRENT_SOURCE_DIR}/billiards-shots-api/src
+
+        $ENV{REPOS}/billiards-scripts/ide/billiards-attempts-api/src
+        $ENV{REPOS}/billiards-scripts/ide/billiards-common/src
+        $ENV{REPOS}/billiards-scripts/ide/billiards-config-api/src
+        $ENV{REPOS}/billiards-scripts/ide/billiards-graphics-api/src
+        $ENV{REPOS}/billiards-scripts/ide/billiards-layouts/src
+        $ENV{REPOS}/billiards-scripts/ide/billiards-projection-api/src
+        $ENV{REPOS}/billiards-scripts/ide/billiards-shots-api/src
+)
 
 add_executable(
         run_fragment
@@ -29,13 +62,13 @@ target_include_directories(
         PUBLIC
 
         ${PROJECT_SOURCE_DIR}/src
-        $ENV{REPOS}/billiards-attempts-api/src
-        $ENV{REPOS}/billiards-common/src
-        $ENV{REPOS}/billiards-config-api/src
-        $ENV{REPOS}/billiards-graphics-api/src
-        $ENV{REPOS}/billiards-layouts/src
-        $ENV{REPOS}/billiards-projection-api/src
-        $ENV{REPOS}/billiards-shots-api/src
+        $ENV{REPOS}/billiards-scripts/ide/billiards-attempts-api/src
+        $ENV{REPOS}/billiards-scripts/ide/billiards-common/src
+        $ENV{REPOS}/billiards-scripts/ide/billiards-config-api/src
+        $ENV{REPOS}/billiards-scripts/ide/billiards-graphics-api/src
+        $ENV{REPOS}/billiards-scripts/ide/billiards-layouts/src
+        $ENV{REPOS}/billiards-scripts/ide/billiards-projection-api/src
+        $ENV{REPOS}/billiards-scripts/ide/billiards-shots-api/src
 )
 
 
