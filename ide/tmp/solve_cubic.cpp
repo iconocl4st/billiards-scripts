@@ -7,7 +7,7 @@
 
 
 #define TOL 1e-15
-#define LARGER_TOL 1e-8
+#define LARGER_TOL 1e-7
 
 
 
@@ -393,6 +393,9 @@ void solve_3_simp(
 	const double P, const double Q,
 	const std::function<void(const double)>& receiver
 ) {
+	std::cout << "P: " << P << std::endl;
+	std::cout << "Q: " << Q << std::endl;
+
 	// https://www.shsu.edu/kws006/professional/Concepts_files/SolvingCubics.pdf
 	const double delta = std::pow(P / 3, 3) + std::pow(Q / 2, 2);
 	const Complex b = Complex{delta}.pow(0.5) + (-Q / 2);
@@ -416,12 +419,19 @@ y = x - c2 / 3
 expand(c0 + c1 * y + c2 * y^2 + y^3).collect(x)
 2/27*c2^3 + x^3 - 1/3*c1*c2 - 1/3*(c2^2 - 3*c1)*x + c0
 */
+
+// Solves:
+// 		c0 + c1 * x + c2 * x * x + x * x * x
 inline
 void solve_3n(
 	const double c0, const double c1, const double c2,
-	const double default_value,
 	const std::function<void(const double)>& receiver
 ) {
+	if (std::abs(c0) < TOL) {
+		receiver(0);
+		solve_2n(c1, c2, receiver);
+	}
+
 	const double P = -1/3.0*(c2*c2 - 3*c1);
 	const double Q = -(2/27.0*c2*c2*c2 - 1/3.0*c1*c2 + c0);
 
@@ -434,6 +444,9 @@ void solve_3n(
 	std::cout << (2/27.0*c2*c2*c2 + -1/3.0*c1*c2 + c0) << ", " << -Q << std::endl;
 	std::cout <<  - 1/3.0*(c2*c2 - 3*c1) << ", " << P << std::endl;
 	std::cout << vx * vx * vx + P * vx - Q << std::endl;
+	std::cout << "c0: " << c0 << std::endl;
+	std::cout << "c1: " << c1 << std::endl;
+	std::cout << "c2: " << c2 << std::endl;
 	std::cout << "===========" << std::endl;
 
 //	const double P = -c2 * c2 / 3;
@@ -466,16 +479,19 @@ void solve_3(
 		solve_2(c0, c1, c2, default_value, receiver);
 		return;
 	}
-	solve_3n(c0 / c3, c1 / c3, c2 / c3, default_value, receiver);
+	solve_3n(c0 / c3, c1 / c3, c2 / c3, receiver);
 }
 
 // Solve:
 // a0 + a1 * x + a2 * x ** 2 + a3 * x ** 3 + x ** 4 == 0
 void solve_4n(
 	const double a0, const double a1, const double a2, const double a3,
-	const double default_val,
 	const std::function<void(const double)>& receiver
 ) {
+	if (std::abs(a0) < TOL) {
+		receiver(0);
+		solve_3n(a1, a2, a3, receiver);
+	}
 	std::cout << "Calling it" << std::endl;
 	// https://mathworld.wolfram.com/QuarticEquation.html
 
@@ -494,10 +510,12 @@ void solve_4n(
 	};
 	solve_3n(
 		4 * a2 * a0 - a1 * a1 - a3 * a3 * a0, a1 * a3 - 4 * a0, -a2,
-		default_val,
 		[a0, a1, a2, a3, &check_receiver](const double y1) {
-			const double r1 = a3 * a3 - 4 * a2 + 4 * y1;
-			const double r2 = y1 * y1 - 4 * a0;
+			const double r1a = a3 * a3 - 4 * a2 + 4 * y1;
+			const double r2a = y1 * y1 - 4 * a0;
+			const double r1 = std::abs(r1a) < LARGER_TOL ? 0 : r1a;
+			const double r2 = std::abs(r2a) < LARGER_TOL ? 0 : r2a;
+			std::cout << "r1=" << r1 << ", r2=" << r2 << std::endl;
 			if (r1 < 0 || r2 < 0) {
 				return;
 			}
@@ -506,7 +524,7 @@ void solve_4n(
 			std::cout << (4 * a2 * a0 - a1 * a1 - a3 * a3 * a0 + (a1 * a3 - 4 * a0) * y1 - a2 * y1 * y1 + y1 * y1 * y1) << std::endl;
 
 
-			solve_2n(0.5 * (y1 + std::sqrt(r2)), 0.5 * (a3 + std::sqrt(r1)), [y1, a0, a1, a2, a3, a3, &check_receiver, r1, r2](double y2) {
+			solve_2n(0.5 * (y1 + std::sqrt(r2)), 0.5 * (a3 + std::sqrt(r1)), [y1, a0, a1, a2, a3, &check_receiver, r1, r2](double y2) {
 				std::cout << "quadratic solve: " << (0.5 * (y1 + std::sqrt(r2)) + 0.5 * (a3 + std::sqrt(r1)) * y2 + y2 * y2) << std::endl;
 				std::cout << "quartic sol: " << (
 					a0 + a1 * y2 + a2 * y2 * y2 + a3 * y2 * y2 * y2 + y2 * y2 * y2 * y2
@@ -549,8 +567,449 @@ void solve_4(
 		solve_3(a0, a1, a2, a3, default_val, sol);
 		return;
 	}
-	solve_4n(a0 / a4, a1 / a4, a2 / a4, a3 / a4, default_val, sol);
+	solve_4n(a0 / a4, a1 / a4, a2 / a4, a3 / a4, sol);
 }
+
+
+// Solve:
+// a00 + a10 * x + a20 * x ** 2 == 0
+void solve_20(
+	const double a00, const double a10, const double a20,
+	const double default_x, const double default_y,
+	const std::function<void(const double x, const double y)>& receiver
+) {
+	// Could use default_y
+	solve_2(a00, a10, a20, default_x, [default_y, &receiver](const double x) { receiver(x, default_y); });
+}
+
+// Solve
+// a00 + a10 * x + a01 * y + a20 * x ** 2 == 0
+void solve_21(
+	const double a00, const double a10, const double a01, const double a20,
+	const double default_x, const double default_y,
+	const std::function<void(const double x, const double y)>& receiver
+) {
+	if (std::abs(a01) < TOL) {
+		solve_20(a00, a10, a20, default_x, default_y, receiver);
+		return;
+	}
+	solve_1n(
+		(a00 + a10 * default_x + a20 * default_x * default_x) / a01,
+		[default_x, receiver](const double y) {
+			receiver(default_x, y);
+		});
+}
+
+// Solve
+// a00 + a10 * x + a01 * y + a20 * x ** 2 + a02 * y ** 2 == 0
+void solve_22_simple(
+	const double a00, const double a10, const double a01, const double a20, const double a02,
+	const double default_x, const double default_y,
+	const std::function<void(const double x, const double y)>& receiver
+) {
+	if (std::abs(a02) < TOL) {
+		solve_21(a00, a10, a01, a20, default_x, default_y, receiver);
+		return;
+	}
+	solve_2n(
+		(a00 + a10 * default_x + a20 * default_x * default_x) / a02,
+		a01 / a02,
+		[default_x, &receiver](const double y) {
+			receiver(default_x, y);
+		}
+	);
+}
+
+// Solve:
+// a00 + a10 * x + a01 * y + a20 * x ** 2 + a11 * x * y + a02 * y ** 2 == 0
+void solve_22(
+	const double a00, const double a10, const double a01, const double a20, const double a11, const double a02,
+	const double default_x, const double default_y,
+	const std::function<void(const double x, const double y)>& receiver
+) {
+	if (std::abs(a11) < TOL) {
+		solve_22_simple(a00, a10, a01, a20, a02, default_x, default_y, receiver);
+		return;
+	}
+
+	// try default_x...
+	{
+		const double b0 = a00 + a10 * default_x + a20 * default_x * default_x;
+		const double b1 = a01 + a11 * default_x;
+		const double b2 = a02;
+
+		if (std::abs(b2) > TOL) {
+			solve_2n(
+				b0 / b2, b1 / b2,
+				[default_x, &receiver](const double y) {
+					receiver(default_x, y);
+				}
+			);
+			return;
+		}
+		if (std::abs(b1) > TOL) {
+			solve_1n(
+				b0 / b1,
+				[default_x, &receiver](const double y) {
+					receiver(default_x, y);
+				}
+			);
+		}
+	}
+
+	// try default_y...
+	// a00 + a10 * x + a01 * y + a20 * x ** 2 + a11 * x * y + a02 * y ** 2 == 0
+	{
+		const double b0 = a00 + a01 * default_y + a02 * default_y * default_y;
+		const double b1 = a10 + a11 * default_y;
+		const double b2 = a20;
+
+		if (std::abs(b2) > TOL) {
+			solve_2n(
+				b0 / b2, b1 / b2,
+				[default_y, &receiver](const double x) {
+					receiver(x, default_y);
+				}
+			);
+			return;
+		}
+		if (std::abs(b1) > TOL) {
+			solve_1n(
+				b0 / b1,
+				[default_y, &receiver](const double x) {
+					receiver(x, default_y);
+				}
+			);
+		}
+	}
+	// a02 == 0
+	// a20 == 0
+	// a11 =/= 0
+	// a10 + a11 * default_y == 0
+	// a01 + a11 * default_x == 0
+
+	// a00 - a11 * default_y * x - a11 * default_x * y + a11 * x * y == 0
+	// a00 + a11 * (-default_y * x - default_x * y + x * y) == 0
+	throw std::runtime_error{"Implement this case: Infinitely many solutions exist, but default_x, default_y does not work"};
+}
+
+// Solve:
+// a00 == 0
+// b00 + b10 * x + b01 * y + b20 * x ** 2 + b11 * x * y + b02 * y ** 2 == 0
+void solve_00_22(
+	const double a00,
+	const double b00, const double b10, const double b01, const double b20, const double b11, const double b02,
+	const double default_x, const double default_y,
+	const std::function<void(const double x, const double y)>& receiver
+) {
+	if (std::abs(a00) < TOL) {
+		solve_22(b00, b10, b01, b20, b11, b02, default_x, default_y, receiver);
+		return;
+	}
+}
+
+// Substitute x = x_val into
+// a00 + a10 * x + a01 * y + a20 * x ** 2 + a11 * x * y + a02 * y ** 2 == 0
+void subs_22_x(
+	const double x_val,
+	const double a00, const double a10, const double a01, const double a20, const double a11, const double a02,
+	const double default_y,
+	const std::function<void(const double x, const double y)>& receiver
+) {
+	solve_2(
+		a00 + a10 * x_val + a20 * x_val * x_val, a01 + a11 * x_val, a02,
+		default_y,
+		[x_val, &receiver](const double y) { receiver(x_val, y); }
+	);
+}
+// Substitute y = y_val into
+// a00 + a10 * x + a01 * y + a20 * x ** 2 + a11 * x * y + a02 * y ** 2 == 0
+void subs_22_y(
+	const double y_val,
+	const double a00, const double a10, const double a01, const double a20, const double a11, const double a02,
+	const double default_x,
+	const std::function<void(const double x, const double y)>& receiver
+) {
+	solve_2(
+		a00 + a01 * y_val + a02 * y_val * y_val, a10 + a11 * y_val, a20,
+		default_x,
+		[y_val, &receiver](const double x) { receiver(x, y_val); }
+	);
+}
+
+// Solve:
+// a00 + a10 * x == 0
+// b00 + b10 * x + b01 * y + b20 * x ** 2 + b11 * x * y + b02 * y ** 2 == 0
+void solve_01_22(
+	const double a00, const double a10,
+	const double b00, const double b10, const double b01, const double b20, const double b11, const double b02,
+	const double default_x, const double default_y,
+	const std::function<void(const double x, const double y)>& receiver
+) {
+	if (std::abs(a10) < TOL) {
+		solve_00_22(a00, b00, b10, b01, b20, b11, b02, default_x, default_y, receiver);
+		return;
+	}
+
+	solve_1n(
+		a00 / a10,
+		[b00, b01, b10, b20, b11, b02, default_y, &receiver](const double x) {
+			subs_22_x(x, b00, b10, b01, b20, b11, b02, default_y, receiver);
+		}
+	);
+}
+
+// Solve:
+// a00 + a10 * x + a20 * x ** 2 == 0
+// b00 + b10 * x + b01 * y + b20 * x ** 2 + b11 * x * y + b02 * y ** 2 == 0
+void solve_02_22(
+	const double a00, const double a10, const double a20,
+	const double b00, const double b10, const double b01, const double b20, const double b11, const double b02,
+	double default_x, double default_y,
+	const std::function<void(const double, const double)>& receiver
+) {
+	if (std::abs(a20) < TOL) {
+		solve_01_22(a00, a10, b00, b10, b01, b20, b11, b02, default_x, default_y, receiver);
+		return;
+	}
+
+	solve_2n(
+		a00 / a20, a10 / a20,
+		[b00, b10, b01, b20, b11, b02, default_y, &receiver](const double x) {
+			subs_22_x(x, b00, b10, b01, b20, b11, b02, default_y, receiver);
+		}
+	);
+}
+
+// Solve:
+// a00 + a10 * x + a01 * y + a20 * x ** 2 == 0
+// b00 + b10 * x + b01 * y + b20 * x ** 2 + b11 * x * y + b02 * y ** 2 == 0
+/*
+ *
+x, y = var('x y')
+a00, a10, a01, a20 = var('a00 a10 a01 a20')
+b00, b10, b01, b20, b11, b02 = var('b00 b10 b01 b20 b11 b02')
+eq1 = a00 + a10 * x + a01 * y + a20 * x ** 2
+eq2 = b00 + b10 * x + b01 * y + b20 * x ** 2 + b11 * x * y + b02 * y ** 2
+
+y_sol = solve(eq1 == 0, y)[0].right()
+poly = eq2.substitute(y=y_sol).expand().collect(x)
+
+print('\t\tconst double y = ' + convert_powers(y_sol) + ';')
+
+for coef, ord in poly.coefficients(x):
+	print('\t\tconst double q' + str(ord) + ' = ' + convert_powers(coef) + ';')
+
+ */
+void solve_21_22(
+	const double a00, const double a10, const double a01, const double a20,
+	const double b00, const double b01, const double b10, const double b20, const double b11, const double b02,
+	double default_x, double default_y,
+	const std::function<void(const double, const double)>& receiver
+) {
+	if (std::abs(a01) < TOL) {
+		solve_02_22(a00, a10, a20, b00, b10, b01, b20, b11, b02, default_x, default_y, receiver);
+		return;
+	}
+
+	const double q0 = b00 - a00*b01/a01 + std::pow(a00, 2)*b02/std::pow(a01, 2);
+	const double q1 = -a10*b01/a01 + 2*a00*a10*b02/std::pow(a01, 2) + b10 - a00*b11/a01;
+	const double q2 = -a20*b01/a01 + std::pow(a10, 2)*b02/std::pow(a01, 2) + 2*a00*a20*b02/std::pow(a01, 2) - a10*b11/a01 + b20;
+	const double q3 = 2*a10*a20*b02/std::pow(a01, 2) - a20*b11/a01;
+	const double q4 = std::pow(a20, 2)*b02/std::pow(a01, 2);
+	solve_4(
+		q0, q1, q2, q3, q4,
+		default_x
+		[a20, a10, a00, receiver](const double x) {
+			const double y = -(a20*std::pow(x, 2) + a10*x + a00)/a01;
+			receiver(x, y);
+		}
+	);
+}
+
+
+// Solve:
+// a0 * x^2 + p0 * x + q0 == 0
+// a1 * x^2 + p1 * x + q1 == 0
+void solve_20_20(
+	const double q0, const double p0, const double a0,
+	const double q1, const double p1, const double a1,
+	const double default_x,
+	const std::function<void(const double)> receiver
+) {
+	const auto check0_rec = [a0, p0, q0, &receiver](const double x) {
+		if (std::abs(a0 * x * x + p0 * x + q0) < LARGER_TOL) {
+			receiver(x);
+		}
+	};
+	const auto check1_rec = [a1, p1, q1, &receiver](const double x) {
+		if (std::abs(a1 * x * x + p1 * x + q1) < LARGER_TOL) {
+			receiver(x);
+		}
+	};
+	if (std::abs(a0) > TOL) {
+		solve_2n(q0 / a0, p0 / a0, check1_rec);
+		return;
+	}
+	if (std::abs(a1) > TOL) {
+		solve_2n(q1 / a1, p1 / a1, check0_rec);
+		return;
+	}
+	if (std::abs(p0) > TOL) {
+		solve_1n(q0 / p0, check1_rec);
+	}
+	if (std::abs(p1) > TOL) {
+		solve_1n(q1 / p1, check0_rec);
+	}
+	if (std::abs(q0) < TOL && std::abs(q1) < TOL) {
+		return;
+	}
+	receiver(default_x);
+
+// a0 * x^2 + p0 * x + q0 == 0
+// a1 * x^2 + p1 * x + q1 == 0
+}
+
+
+/*
+ * Sage script:
+
+import re
+def convert_powers(expr):
+	return re.sub(r'([a-zA-Z0-9]*)\^([0-9]+)', r'std::pow(\g<1>, \g<2>)', str(expr))
+
+# R.<x,y> = QQ[]
+x, y = var('x y')
+a0, b0, c0, d0, e0, f0 = var('a0 b0 c0 d0 e0 f0')
+a1, b1, c1, d1, e1, f1 = var('a1 b1 c1 d1 e1 f1')
+
+eq00 = f0 + d0 * x + e0 * y + a0 * x^2 + c0 * x * y + b0 * y^2
+eq01 = f1 + d1 * x + e1 * y + a1 * x^2 + c1 * x * y + b1 * y^2
+
+p0 = c0 * y + d0
+q0 = f0 + e0 * y + b0 * y^2
+p1 = c1 * y + d1
+q1 = f1 + e1 * y + b1 * y^2
+
+eq10 = a0 * x^2 + p0 * x + q0
+eq11 = a1 * x^2 + p1 * x + q1
+
+bool(eq00 == eq10) # True
+bool(eq01 == eq11) # True
+
+eq2 = (a1 * eq10 - a0 * eq11).expand().collect(x)
+
+for coef, ord in eq2.coefficients(x):
+	print('\t\t\tconst double l' + str(ord) + ' = ' + convert_powers(coef) + ';')
+
+# x_sol = eq2.roots(x)[0][0]
+x_sol = solve(eq2, x)[0].right()
+num = numerator(x_sol)
+den = denominator(x_sol)
+l0, l1 = [p[0] for p in sorted(eq2.collect(x).coefficients(x), key=lambda p: p[1])]
+bool(l0 + l1 * x == eq2)
+bool(x_sol == num / den)
+
+# print('\t\t\tconst double num = ' + convert_powers(num) + ';')
+# print('\t\t\tconst double den = ' + convert_powers(den) + ';')
+
+eq3 = (den^2 * eq10.substitute(x=x_sol)).simplify_full().expand().collect(y)
+# eq3 = (a0 * num^2 + p0 * num * den + q0 * den^2).collect(y)
+
+for coef, ord in eq3.coefficients(y):
+	print('\t\tconst double q' + str(ord) + ' = ' + convert_powers(coef) + ';')
+
+ */
+//
+// Solve:
+// 		f0 + d0 * x + e0 * y + a0 * x ** 2 + c0 * x * y + b0 * y ** 2 == 0
+// 		f1 + d1 * x + e1 * y + a1 * x ** 2 + c1 * x * y + b1 * y ** 2 == 0
+//
+void solve_22_22(
+	const double f0, const double d0, const double e0, const double a0, const double c0, const double b0,
+	const double f1, const double d1, const double e1, const double a1, const double c1, const double b1,
+	const double default_x, const double default_y,
+	const std::function<void(const double, const double)>& receiver
+) {
+	if (std::abs(b0) < TOL &&& std::abs(a0) < TOL && std::abs(c0) < TOL) {
+
+		return;
+	}
+#if 0
+	const double A = std::pow(a0 * b1, 2) + (a0 * c1) * (b0 * c1);
+	const double B = 2 * (a0 * e1) * (a0 * b1) - (a0 * c1) * (c0 * e1) + (a0 * c1) * (b0 * d1) + (a0 * d1) * (b0 * c1);
+	const double C = std::pow(a0 * e1, 2) + 2 * (a0 * b1) * (a0 * f1) - (a0 * c1) * (c0 * f1)
+		- (a0 * c1) * (d0 * e1) - (a0 * d1) * (c0 * e1) + (a0 * d1) * (b0 * d1);
+	const double D = 2 * (a0 * e1) * (a0 * f1) - (a0 * c1) * (d0 * f1) - (a0 * d1) * (c0 * f1) - (a0 * d1) * (d0 * e1);
+	const double E = std::pow(a0 * f1, 2) - (a0 * d1) * (d0 * f1);
+#endif
+	const double q0 = -a0*a1*d0*d1*f0 + std::pow(a0, 2)*std::pow(d1, 2)*f0 + a0*std::pow(a1, 2)*std::pow(f0, 2) + a0*a1*std::pow(d0, 2)*f1 - std::pow(a0, 2)*d0*d1*f1 - 2*std::pow(a0, 2)*a1*f0*f1 + std::pow(a0, 3)*std::pow(f1, 2);
+	const double q1 = -a0*a1*d0*d1*e0 + std::pow(a0, 2)*std::pow(d1, 2)*e0 + a0*a1*std::pow(d0, 2)*e1 - std::pow(a0, 2)*d0*d1*e1 - a0*a1*c1*d0*f0 - a0*a1*c0*d1*f0 + 2*std::pow(a0, 2)*c1*d1*f0 + 2*a0*std::pow(a1, 2)*e0*f0 - 2*std::pow(a0, 2)*a1*e1*f0 + 2*a0*a1*c0*d0*f1 - std::pow(a0, 2)*c1*d0*f1 - std::pow(a0, 2)*c0*d1*f1 - 2*std::pow(a0, 2)*a1*e0*f1 + 2*std::pow(a0, 3)*e1*f1;
+	const double q2 = a0*a1*b1*std::pow(d0, 2) - a0*a1*b0*d0*d1 - std::pow(a0, 2)*b1*d0*d1 + std::pow(a0, 2)*b0*std::pow(d1, 2) - a0*a1*c1*d0*e0 - a0*a1*c0*d1*e0 + 2*std::pow(a0, 2)*c1*d1*e0 + a0*std::pow(a1, 2)*std::pow(e0, 2) + 2*a0*a1*c0*d0*e1 - std::pow(a0, 2)*c1*d0*e1 - std::pow(a0, 2)*c0*d1*e1 - 2*std::pow(a0, 2)*a1*e0*e1 + std::pow(a0, 3)*std::pow(e1, 2) + 2*a0*std::pow(a1, 2)*b0*f0 - 2*std::pow(a0, 2)*a1*b1*f0 - a0*a1*c0*c1*f0 + std::pow(a0, 2)*std::pow(c1, 2)*f0 - 2*std::pow(a0, 2)*a1*b0*f1 + 2*std::pow(a0, 3)*b1*f1 + a0*a1*std::pow(c0, 2)*f1 - std::pow(a0, 2)*c0*c1*f1;
+	const double q3 = 2*a0*a1*b1*c0*d0 - a0*a1*b0*c1*d0 - std::pow(a0, 2)*b1*c1*d0 - a0*a1*b0*c0*d1 - std::pow(a0, 2)*b1*c0*d1 + 2*std::pow(a0, 2)*b0*c1*d1 + 2*a0*std::pow(a1, 2)*b0*e0 - 2*std::pow(a0, 2)*a1*b1*e0 - a0*a1*c0*c1*e0 + std::pow(a0, 2)*std::pow(c1, 2)*e0 - 2*std::pow(a0, 2)*a1*b0*e1 + 2*std::pow(a0, 3)*b1*e1 + a0*a1*std::pow(c0, 2)*e1 - std::pow(a0, 2)*c0*c1*e1;
+	const double q4 = a0*std::pow(a1, 2)*std::pow(b0, 2) - 2*std::pow(a0, 2)*a1*b0*b1 + std::pow(a0, 3)*std::pow(b1, 2) + a0*a1*b1*std::pow(c0, 2) - a0*a1*b0*c0*c1 - std::pow(a0, 2)*b1*c0*c1 + std::pow(a0, 2)*b0*std::pow(c1, 2);
+
+	std::cout << "q0=" << q0 << std::endl;
+	std::cout << "q1=" << q1 << std::endl;
+	std::cout << "q2=" << q2 << std::endl;
+	std::cout << "q3=" << q3 << std::endl;
+	std::cout << "q4=" << q4 << std::endl;
+
+	if (std::abs(q0) < TOL && std::abs(q1) < TOL && std::abs(q2) << TOL && std::abs(q3) < TOL && std::abs(q4) < 0) {
+		// TODO:
+	}
+
+	solve_4(
+//		E, D, C, B, A,
+		q0, q1, q2, q3, q4,
+		default_y,
+		[q0, q1, q2, q3, q4, a0, b0, c0, d0, e0, f0, a1, b1, c1, d1, e1, f1, default_x, &receiver](const double y) {
+#if 0
+			const double c0 = f0 + d0 * y + b0 * y * y;
+			const double c1 = d0 + c0 * y;
+			const double c2 = a0;
+#endif
+			std::cout << "\t\tquart 1: " << q0 + q1 * y + q2 * y * y + q3 * y * y * y + q4 * y * y * y * y << std::endl;
+
+			const double l0 = a1*b0*std::pow(y, 2) - a0*b1*std::pow(y, 2) + a1*e0*y - a0*e1*y + a1*f0 - a0*f1;
+			const double l1 = a1*c0*y - a0*c1*y + a1*d0 - a0*d1;
+
+			const double pv0 = c0 * y + d0;
+			const double qv0 = f0 + e0 * y + b0 * y * y;
+
+			const double pv1 = c1 * y + d1;
+			const double qv1 = f1 + e1 * y + b1 * y * y;
+
+			std::cout << "l1=" << l1 << std::endl;
+			std::cout << "l0=" << l0 << std::endl;
+			std::cout << "p=" << pv0 << std::endl;
+			std::cout << "q=" << qv0 << std::endl;
+			std::cout << "a0=" << a0 << std::endl;
+
+			const auto rec = [pv0, qv0, pv1, qv1, q0, q1, q2, q3, q4, a0, b0, c0, d0, e0, f0, a1, b1, c1, d1, e1, f1, l0, l1, y, &receiver](const double x){
+				std::cout << "\t\tlinear: " << l0 + l1 * x << std::endl;
+				std::cout << "\t\tquart 2: " << a0 * x * x + pv0 * x + qv0 << std::endl;
+				std::cout << "\t\tquart 3: " << a1 * x * x + pv1 * x + qv1 << std::endl;
+				std::cout << "\t\tinter linear: " << (
+					a1*b0*y * y - a0*b1*y * y + a1*e0*y - a0*e1*y + a1*f0 - a0*f1 + (a1*c0*y - a0*c1*y + a1*d0 - a0*d1)*x
+				) << std::endl;
+				receiver(x, y);
+			};
+
+			if (std::abs(l1) > TOL) {
+				rec(-l0 / l1);
+				return;
+			}
+			solve_20_20(
+				qv0, pv0, a0,
+				qv1, pv1, a1,
+				default_x,
+				rec
+			);
+		}
+	);
+}
+
 
 
 int main() {
@@ -626,6 +1085,7 @@ expand((x - 3) * (x + 2) * (x-7))
 			});
 	}
 
+	if (0)
 	{
 		const double c0 = -0.034133333333333335;
 		const double c1 = 0.17066666666666666;
@@ -635,11 +1095,53 @@ expand((x - 3) * (x + 2) * (x-7))
 
 		solve_4n(
 			c0, c1, c2, c3,
-			0,
 			[c0, c1, c2, c3](double x) {
 				std::cout << "Quartic solution: " << x << std::endl;
 				std::cout << "p(x) = " << (c0 + c1 * x + c2 * x * x + c3 * x * x * x + x * x * x * x) << std::endl;
 			});
+	}
+
+	{
+		const double a00 = -1;
+		const double a10 = 0;
+		const double a01 = 0;
+		const double a20 = 1;
+		const double a11 = 0;
+		const double a02 = 1;
+
+		const double b00 = -1;
+		const double b10 = 0;
+		const double b01 = 0;
+		const double b20 = 1;
+		const double b11 = 0;
+		const double b02 = 0;
+		solve_22(
+			a00, a10, a01, a20, a11, a02,
+			b00, b10, b01, b20, b11, b02,
+			std::nan(""), std::nan(""),
+			[
+				a00, a10, a01, a20, a11, a02,
+				b00, b10, b01, b20, b11, b02](const double x, const double y
+			) {
+				std::cout << "=========================================================" << std::endl;
+				std::cout << "systems solution:" << std::endl;
+				std::cout << x << ", " << y << std::endl;
+
+				std::cout << "eq1: " << a00 + a10 * x + a01 * y + a20 * x * x + a11 * x * y + a02 * y * y << std::endl;
+				std::cout << "eq2: " << b00 + b10 * x + b01 * y + b20 * x * x + b11 * x * y + b02 * y * y << std::endl;
+				std::cout << "=========================================================" << std::endl;
+			}
+		);
+
+		{
+			const double x = 1;
+			const double y = 0;
+			std::cout << "=========================================================" << std::endl;
+			std::cout << "some solution" << std::endl;
+			std::cout << "eq1: " << a00 + a10 * x + a01 * y + a20 * x * x + a11 * x * y + a02 * y * y << std::endl;
+			std::cout << "eq2: " << b00 + b10 * x + b01 * y + b20 * x * x + b11 * x * y + b02 * y * y << std::endl;
+			std::cout << "=========================================================" << std::endl;
+		}
 	}
 
 	return 0;

@@ -1,5 +1,6 @@
+#!/bin/bash
 
-export REPOS=../..
+export REPOS=$(realpath ../..)
 ln -s $REPOS/billiards-common/ billiards-common
 ln -s $REPOS/billiards-attempts-api/ billiards-attempts-api
 ln -s $REPOS/billiards-graphics-api/ billiards-graphics-api
