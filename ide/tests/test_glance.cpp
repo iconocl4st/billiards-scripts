@@ -26,8 +26,11 @@ TEST_CASE("Solve get_glance_location happy case", "[get_glance_location]") {
 	billiards::shots::math::get_glance_location(
 		ax, ay,
 		dx, dy,
-		r, M_PI,
-		[&](const double x, const double y) {
+		r,
+		[&](const billiards::shots::RollingGlanceCalculation& c) {
+			const double x = c.loc.x;
+			const double y = c.loc.y;
+
 			std::cout << "x=" << x << ", y=" << y << std::endl;
 
 			const double tx = y;
@@ -41,7 +44,6 @@ TEST_CASE("Solve get_glance_location happy case", "[get_glance_location]") {
 			// These are checked within the method:
 //			eq_dx = t * dx == (1 - alpha) * tx + alpha * s * ax
 //			eq_dy = t * dy == (1 - alpha) * ty + alpha * s * ay
-
 		}
 	);
 //	REQUIRE(tracker.count() == 1);

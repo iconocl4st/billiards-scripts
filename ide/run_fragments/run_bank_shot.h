@@ -12,7 +12,7 @@
 #include "billiards_common/shots/shot_is_possible.h"
 
 #include "ShotInfoParams.h"
-#include "calculate_shot.h"
+#include "shot_calculation/shot.h"
 
 namespace billiards::fragments {
 
@@ -38,7 +38,10 @@ namespace billiards::fragments {
 			config::constants::RIGHT_UPPER_POCKET));
 
 		shots::ShotInformation info{params.shot};
-		shots::calculate_shot(params, info);
+		bool success = shots::calculate_shot(params, info);
+		if (!success) {
+			std::cout << "Not successful" << std::endl;
+		}
 
 		print_object(params.locations, "locations.json");
 		print_object(params.table, "table.json");
