@@ -124,6 +124,8 @@ clean:
 cleaner: clean
 	{cleaner-dirs}
 
+native-all: native-projection {all-native-projects-string}
+
 all: native-projection {projects-string}
 	'''.format(**keys)
 
@@ -139,6 +141,7 @@ def write_makefile(paths, outfile):
 	outfile.write(footer_rule({
 		**paths,
 		'projects-string': ' '.join(project_name(p) for p in cmake_projects),
+		'all-native-projects-string': ' '.join('native-' + project_name(p) for p in cmake_projects),
 		'clean-dirs': '\n\t'.join('rm -rf "' + paths['scripts'] + '/' + p + '"' for p in clean_dirs),
 		'cleaner-dirs': '\n\t'.join('rm -rf "' + paths['scripts'] + '/' + p + '"' for p in cleaner_dirs),
 	}))

@@ -19,6 +19,7 @@ add_executable(
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_polynomials.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_systems.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_glance.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_shot_calculation.cpp
 )
 target_link_libraries(run_tests PRIVATE Catch2::Catch2WithMain)
 target_include_directories(
@@ -88,3 +89,4 @@ target_include_directories(
 # TODO: Build could be faster if the crow server had a wrapper
 # TODO: orient pocket has a bug where it widens the angle...
 # TODO: tests
+# TODO: Maybe go to eigen
