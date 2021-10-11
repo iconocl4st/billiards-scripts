@@ -10,10 +10,10 @@
 // Define this in only one file to add 'main'
 //#define CATCH_CONFIG_MAIN
 
-#include "/mnt/1f0ab4b3-c472-49e1-92d8-c0b5664f7fdb/ProjectsForFun/Pool/repos/billiards-shots-api/src/math/rolling_glance.h"
+#include "math/rolling_glance.h"
 #include "SolutionsTracker.h"
 
-using namespace billiards::math;
+#define LARGER_TOLERANCE 1e-5
 
 
 TEST_CASE("Solve get_glance_location happy case", "[get_glance_location]") {
@@ -38,8 +38,8 @@ TEST_CASE("Solve get_glance_location happy case", "[get_glance_location]") {
 			const double s = (ax * tx + ay * ty) / (ax * ax + ay * ay);
 			const double alpha = 2/7.0;
 
-			REQUIRE(std::abs(x * x + y * y - r * r) < LARGER_TOL);
-			REQUIRE(std::abs((s * ax) * (s * ax - tx) + (s * ay) * (s * ay - ty)) < LARGER_TOL);
+			REQUIRE(std::abs(x * x + y * y - r * r) < LARGER_TOLERANCE);
+			REQUIRE(std::abs((s * ax) * (s * ax - tx) + (s * ay) * (s * ay - ty)) < LARGER_TOLERANCE);
 
 			// These are checked within the method:
 //			eq_dx = t * dx == (1 - alpha) * tx + alpha * s * ax

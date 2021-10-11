@@ -67,9 +67,9 @@ namespace billiards::test {
 
 		[[nodiscard]] inline
 		bool contains(const std::pair<double, double>& value) const {
-			for (const std::pair<double, double>& sol : *sols) {
-				if (std::abs(sol.first - value.first) < LARGER_TOL
-					&& std::abs(sol.second - value.second) < LARGER_TOL
+			for (const auto& sol : *sols) {
+				if (std::abs(sol.first - value.first) < 1e-5
+					&& std::abs(sol.second - value.second) < 1e-5
 				) {
 					return true;
 				}

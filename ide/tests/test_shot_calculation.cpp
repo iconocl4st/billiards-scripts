@@ -39,15 +39,14 @@ void write_shot(ShotInfoParams& params, ShotInformation& info) {
 	print_object(info, "shot_info.json");
 }
 
-void require_feasible(ShotInfoParams& params, ShotInformation& info) {
+bool require_feasible(ShotInfoParams& params, ShotInformation& info) {
 	bool success = calculate_shot(params, info);
 //	REQUIRE(success);
 	const bool possible = shot_info_is_possible(
 		params.table,
 		params.locations,
 		info);
-
-//	REQUIRE(possible);
+	return possible;
 }
 
 
@@ -77,7 +76,8 @@ TEST_CASE("run bank shot happy case", "[calculate_shot]") {
 		constants::MIDDLE_UPPER_POCKET));
 
 	ShotInformation info{params.shot};
-	require_feasible(params, info);
+	const bool feasible = require_feasible(params, info);
+	REQUIRE(feasible);
 }
 
 TEST_CASE("run kick shot happy case", "[calculate_shot]") {
@@ -93,7 +93,8 @@ TEST_CASE("run kick shot happy case", "[calculate_shot]") {
 		constants::MIDDLE_UPPER_POCKET));
 
 	ShotInformation info{params.shot};
-	require_feasible(params, info);
+	const bool feasible = require_feasible(params, info);
+	REQUIRE(feasible);
 }
 
 TEST_CASE("run combo shot happy case", "[calculate_shot]") {
@@ -108,7 +109,8 @@ TEST_CASE("run combo shot happy case", "[calculate_shot]") {
 	params.shot.steps.push_back(std::make_shared<PocketStep>(constants::RIGHT_LOWER_POCKET));
 
 	ShotInformation info{params.shot};
-	require_feasible(params, info);
+	const bool feasible = require_feasible(params, info);
+	REQUIRE(feasible);
 }
 
 TEST_CASE("run kiss shot happy case", "[calculate_shot]") {
@@ -123,8 +125,12 @@ TEST_CASE("run kiss shot happy case", "[calculate_shot]") {
 	params.shot.steps.push_back(std::make_shared<PocketStep>(constants::RIGHT_LOWER_POCKET));
 
 	ShotInformation info{params.shot};
-	require_feasible(params, info);
-	write_shot(params, info);
+	const bool feasible = require_feasible(params, info);
+	if (feasible) {
+		write_shot(params, info);
+	} else {
+		std::cout << "Not feasible, so not writing" << std::endl;
+	}
 }
 
 TEST_CASE("run carom shot happy case", "[calculate_shot]") {
@@ -139,6 +145,6 @@ TEST_CASE("run carom shot happy case", "[calculate_shot]") {
 	params.shot.steps.push_back(std::make_shared<PocketStep>(constants::RIGHT_LOWER_POCKET));
 
 	ShotInformation info{params.shot};
-	require_feasible(params, info);
-//	write_shot(params, info);
+	const bool feasible = require_feasible(params, info);
+	REQUIRE(feasible);
 }

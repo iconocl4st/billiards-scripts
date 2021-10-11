@@ -8,5 +8,6 @@ RUN apk add g++
 RUN apk add gcc
 RUN apk add make
 RUN apk add cmake
+RUN apk add eigen-dev
 # --no-cache
 

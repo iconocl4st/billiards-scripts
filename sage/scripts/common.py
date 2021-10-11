@@ -2,6 +2,11 @@
 import re
 
 
+# export REPOS=/mnt/1f0ab4b3-c472-49e1-92d8-c0b5664f7fdb/ProjectsForFun/Pool/repos
+# docker run -v $(realpath $REPOS/billiards-scripts/sage/scripts):/home/sage/scripts --workdir=/home/sage/scripts -it sagemath/sagemath:latest
+
+
+
 # TODO: should use std::sqrt and std::cbrt...
 def convert_powers(expr):
 	return re.sub(
@@ -37,3 +42,27 @@ def print_double_assignment(name, expression, indent=3, replaces=None):
 	if replaces is not None:
 		s = replaces(s)
 	print(s)
+
+
+class PowerReplacement:
+	def __init__(self, term, power):
+		self.term = term
+		self.power = power
+	
+	def get_var_name(self, p):
+		if p == 1:
+			return self.term
+		return self.term + "_" + str(p)
+	
+	def replace(self, s):
+		for p in range(2, self.power + 1):
+			s = s.replace('std::pow(' + self.term + ', ' + str(p) + ')', self.get_var_name(p))
+		return s
+	
+	def generate_assignments(self, indent=2):
+		for p in range(2, self.power + 1):
+			print_double_assignment(self.get_var_name(p), self.get_var_name(p - 1) + ' * ' + self.term);
+
+# p = PowerReplacement('ax', 4)
+# p.generate_assignments()
+# print(p.replace('std::pow(ax, 3)'))
