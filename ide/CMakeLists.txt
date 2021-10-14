@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.18)
 project(idea)
 
+include(FindPkgConfig)
+
 set(CMAKE_CXX_STANDARD 20)
 #set(CMAKE_VERBOSE_MAKEFILE on)
 
@@ -12,18 +14,23 @@ add_subdirectory(billiards-graphics-api)
 
 find_package(Boost COMPONENTS system REQUIRED)
 find_package(Catch2 2 REQUIRED)
-find_package (Eigen3 3.3 REQUIRED NO_MODULE)
+find_package(Eigen3 3.3 REQUIRED NO_MODULE)
+
+pkg_search_module(gmpxx REQUIRED gmpxx)
+
 
 add_executable(
         run_tests
 
+		${CMAKE_CURRENT_SOURCE_DIR}/tests/test_gmp_poly.cpp
+		${CMAKE_CURRENT_SOURCE_DIR}/tests/test_parse_poly.cpp
 		${CMAKE_CURRENT_SOURCE_DIR}/tests/test_higher_order_polys.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_polynomials.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_systems.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_glance.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_shot_calculation.cpp
 )
-target_link_libraries(run_tests PRIVATE Catch2::Catch2WithMain Eigen3::Eigen)
+target_link_libraries(run_tests PRIVATE Catch2::Catch2WithMain Eigen3::Eigen gmpxx gmp)
 target_include_directories(
         run_tests
 
