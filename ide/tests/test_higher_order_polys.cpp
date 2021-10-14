@@ -56,16 +56,13 @@ TEST_CASE("Solve higher order polynomials happy case", "[compute_roots]") {
 
 	const auto eval = [&](const double x) { return c0 + c1 * x + c2 * std::pow(x, 2) + c3 * std::pow(x, 3) + c4 * std::pow(x, 4) + c5 * std::pow(x, 5) + c6 * std::pow(x, 6); };
 
-	int count = 0;
 	std::vector<double> coefficients{c0, c1, c2, c3, c4, c5, c6};
-	billiards::shots::math::compute_roots(
-		coefficients,
-		[&](const double root) {
-			REQUIRE(std::abs(eval(root)) < 1e-4);
-			count++;
-		}
-	);
-	REQUIRE(count == 6);
+	std::list<double> roots;
+	billiards::shots::math::compute_roots(coefficients, roots);
+	for (const double root : roots) {
+		REQUIRE(std::abs(eval(root)) < 1e-4);
+	}
+	REQUIRE(roots.size() == 6);
 }
 
 
@@ -87,78 +84,60 @@ TEST_CASE("Solve higher order polynomials repeated roots", "[compute_roots]") {
 
 	const auto eval = [&](const double x) { return c0 + c1 * x + c2 * std::pow(x, 2) + c3 * std::pow(x, 3) + c4 * std::pow(x, 4) + c5 * std::pow(x, 5) + c6 * std::pow(x, 6); };
 
-	int count = 0;
 	std::vector<double> coefficients{c0, c1, c2, c3, c4, c5, c6};
-	billiards::shots::math::compute_roots(
-		coefficients,
-		[&](const double root) {
-			REQUIRE(std::abs(eval(root)) < 1e-4);
-			count++;
-		}
-	);
-	REQUIRE(count == 4);
+	std::list<double> roots;
+	billiards::shots::math::compute_roots(coefficients, roots);
+	for (const double root : roots) {
+		REQUIRE(std::abs(eval(root)) < 1e-4);
+	}
+	REQUIRE(roots.size() == 4);
 }
 
 TEST_CASE("Get roots of linear", "[compute_roots]") {
 	std::vector<double> coefficients{3, 2};
 
-	int count = 0;
-	billiards::shots::math::compute_roots(
-		coefficients,
-		[&](const double root) {
-			REQUIRE(std::abs(root + 3 / 2.0) < 1e-4);
-			count++;
-		}
-	);
-	REQUIRE(count == 1);
+	std::list<double> roots;
+	billiards::shots::math::compute_roots(coefficients, roots);
+	for (const double root : roots) {
+		REQUIRE(std::abs(root + 3 / 2.0) < 1e-4);
+	}
+	REQUIRE(roots.size() == 1);
 }
 
 TEST_CASE("Get roots of quadratic", "[compute_roots]") {
 	std::vector<double> coefficients{6, 5, 1};
 
-	int count = 0;
-	billiards::shots::math::compute_roots(
-		coefficients,
-		[&](const double root) {
-			REQUIRE((
-				std::abs(root + 2) < 1e-4 ||
-				std::abs(root + 3) < 1e-4
-			));
-			count++;
-		}
-	);
-	REQUIRE(count == 2);
+	std::list<double> roots;
+	billiards::shots::math::compute_roots(coefficients, roots);
+	for (const double root : roots) {
+		REQUIRE((
+			std::abs(root + 2) < 1e-4 ||
+			std::abs(root + 3) < 1e-4
+		));
+	}
+	REQUIRE(roots.size() == 2);
 }
 
 TEST_CASE("Solve all zeros", "[compute_roots]") {
 	std::vector<double> coefficients{0, 0, 0, 0, 0};
-	int count = 0;
-	billiards::shots::math::compute_roots(
-		coefficients,
-		[&](const double root) {
-			REQUIRE(std::abs(root) < 1e-4);
-			count++;
-		}
-	);
-	REQUIRE(count == 1);
+	std::list<double> roots;
+	billiards::shots::math::compute_roots(coefficients, roots);
+	for (const double root : roots) {
+		REQUIRE(std::abs(root) < 1e-4);
+	}
+	REQUIRE(roots.size() == 1);
 }
 
 TEST_CASE("Solve higher order polynomials impossible", "[compute_roots]") {
 	std::vector<double> coefficients{1, 0, 0, 0, 0};
-	billiards::shots::math::compute_roots(
-		coefficients,
-		[&](const double root) {
-			REQUIRE(false);
-		}
-	);
+	std::list<double> roots;
+	billiards::shots::math::compute_roots(coefficients, roots);
+	REQUIRE(roots.empty());
 }
 
 TEST_CASE("Solve higher order polynomials imaginary roots", "[compute_roots]") {
 	std::vector<double> coefficients{1, 0, 1};
-	billiards::shots::math::compute_roots(
-		coefficients,
-		[&](const double root) {
-			REQUIRE(false);
-		}
-	);
+	std::list<double> roots;
+	billiards::shots::math::compute_roots(coefficients, roots);
+	REQUIRE(roots.empty());
 }

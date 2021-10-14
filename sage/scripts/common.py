@@ -2,8 +2,10 @@
 import re
 
 
-# export REPOS=/mnt/1f0ab4b3-c472-49e1-92d8-c0b5664f7fdb/ProjectsForFun/Pool/repos
-# docker run -v $(realpath $REPOS/billiards-scripts/sage/scripts):/home/sage/scripts --workdir=/home/sage/scripts -it sagemath/sagemath:latest
+'''
+export REPOS=/mnt/1f0ab4b3-c472-49e1-92d8-c0b5664f7fdb/ProjectsForFun/Pool/repos
+docker run -v $(realpath $REPOS/billiards-scripts/sage/scripts):/home/sage/scripts --workdir=/home/sage/scripts -it sagemath/sagemath:latest
+'''
 
 
 
@@ -37,11 +39,14 @@ def get_coefficients(expr, x, y):
 	return zip(ret, ['00', '10', '01', '20', '11', '02'])
 
 
-def print_double_assignment(name, expression, indent=3, replaces=None):
+def print_double_assignment(name, expression, indent=3, replaces=None, outf=None):
 	s = ''.join(['\t'] * indent + ['const double ', name, ' = ', convert_powers(expression), ';'])
 	if replaces is not None:
 		s = replaces(s)
-	print(s)
+	if outf is None:
+		print(s)
+	else:
+		outf.write(s + '\n')
 
 
 class PowerReplacement:
@@ -59,9 +64,9 @@ class PowerReplacement:
 			s = s.replace('std::pow(' + self.term + ', ' + str(p) + ')', self.get_var_name(p))
 		return s
 	
-	def generate_assignments(self, indent=2):
+	def generate_assignments(self, indent=2, outf=None):
 		for p in range(2, self.power + 1):
-			print_double_assignment(self.get_var_name(p), self.get_var_name(p - 1) + ' * ' + self.term);
+			print_double_assignment(self.get_var_name(p), self.get_var_name(p - 1) + ' * ' + self.term, outf=outf);
 
 # p = PowerReplacement('ax', 4)
 # p.generate_assignments()
