@@ -55,26 +55,33 @@ TEST_CASE("gmp test multiply", "[poly]") {
 
 TEST_CASE("f4", "[poly]") {
 	Ideal ideal;
-	ideal.register_var("x");
-	ideal.register_var("y");
 	ideal.register_var("z");
-	std::string s1 = "x[0] * x[2] - x[1]^2";
-	std::string s2 = "x[0]^3 - x[2]^2";
+	ideal.register_var("y");
+	ideal.register_var("x");
+	std::string s1 = "x[2]^2 + x[2] * x[1] - 1";
+	std::string s2 = "x[2]^2 - x[0]^2";
+	std::string s3 = "x[2] * x[1] + 1";
+//	std::string s1 = "x[0] * x[2] - x[1]^2";
+//	std::string s2 = "x[2]^3 - x[0]^2";
+//	std::string s1 = "x[0] * x[2] - x[1]^2";
+//	std::string s2 = "x[0]^3 - x[2]^2";
 	// page 97
 	const PolyDict p1 = parse::parse_polynomial(ideal, s1);
 	const PolyDict p2 = parse::parse_polynomial(ideal, s2);
+	const PolyDict p3 = parse::parse_polynomial(ideal, s3);
 
-	std::vector<PolyDict> polys{p1, p2};
+	std::vector<PolyDict> polys{p1, p2, p3};
 
 	std::cout << "Polynomial generators:" << std::endl;
 	for (const auto& b : polys) {
 		std::cout << "\t" << b << std::endl;
 	}
 
-	f4(polys);
+	std::vector<PolyDict> basis;
+	f4(polys, basis);
 
 	std::cout << "Computed basis:" << std::endl;
-	for (const auto& b : polys) {
+	for (const auto& b : basis) {
 		std::cout << "\t" << b << std::endl;
 	}
 }
