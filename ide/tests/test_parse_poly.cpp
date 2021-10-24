@@ -118,14 +118,27 @@ TEST_CASE("test multiply", "[poly]") {
 }
 
 
+TEST_CASE("test substitute", "[substitute]") {
+    auto ideal = std::make_shared<Ideal>(cmp::GradedLexical);
+    ideal->register_var("x[0]");
+    ideal->register_var("x[1]");
+    auto vec_impl = std::make_shared<VectorIndexImpl>(ideal);
+    auto impl = std::dynamic_pointer_cast<IndexImpl>(vec_impl);
+    PolyPtr p1 = parsing::parse_polynomial(impl, "x[0]^3 - 2 * x[0] * x[1]");
+    PolyPtr p2 = parsing::parse_polynomial(impl, "x[0]^2 * x[1] - 2 * x[1]^2 + x[0]");
+
+    simplify::
+}
+
+
 TEST_CASE("test buckberger", "[poly]") {
-	auto ideal = std::make_shared<Ideal>(cmp::GradedLexical);
-	ideal->register_var("x[0]");
-	ideal->register_var("x[1]");
-	auto vec_impl = std::make_shared<VectorIndexImpl>(ideal);
-	auto impl = std::dynamic_pointer_cast<IndexImpl>(vec_impl);
-	PolyPtr p1 = parsing::parse_polynomial(impl, "x[0]^3 - 2 * x[0] * x[1]");
-	PolyPtr p2 = parsing::parse_polynomial(impl, "x[0]^2 * x[1] - 2 * x[1]^2 + x[0]");
+    auto ideal = std::make_shared<Ideal>(cmp::GradedLexical);
+    ideal->register_var("x[0]");
+    ideal->register_var("x[1]");
+    auto vec_impl = std::make_shared<VectorIndexImpl>(ideal);
+    auto impl = std::dynamic_pointer_cast<IndexImpl>(vec_impl);
+    PolyPtr p1 = parsing::parse_polynomial(impl, "x[0]^3 - 2 * x[0] * x[1]");
+    PolyPtr p2 = parsing::parse_polynomial(impl, "x[0]^2 * x[1] - 2 * x[1]^2 + x[0]");
 //	PolyPtr p3 = parsing::parse_polynomial(impl, "x[0]^2 * x[1] + x[0] * x[1]^2 + x[1]^2");
 
 	std::vector<PolyPtr> basis{p1, p2};

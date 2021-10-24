@@ -1,9 +1,6 @@
 //
 // Created by thallock on 10/5/21.
 //
-//
-// Created by thallock on 10/3/21.
-//
 
 #include "catch2/catch.hpp"
 

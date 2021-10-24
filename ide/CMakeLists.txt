@@ -4,7 +4,7 @@ project(idea)
 include(FindPkgConfig)
 
 set(CMAKE_CXX_STANDARD 20)
-#set(CMAKE_VERBOSE_MAKEFILE on)
+set(CMAKE_VERBOSE_MAKEFILE on)
 
 add_subdirectory(billiards-common)
 add_subdirectory(billiards-layouts-api)
@@ -13,15 +13,20 @@ add_subdirectory(billiards-shots-api)
 add_subdirectory(billiards-graphics-api)
 
 find_package(Boost COMPONENTS system REQUIRED)
-find_package(Catch2 2 REQUIRED)
+find_package(Catch2 2 REQUIRED hints "/usr/lib64/cmake/Catch2/")
 find_package(Eigen3 3.3 REQUIRED NO_MODULE)
 
 pkg_search_module(gmpxx REQUIRED gmpxx)
 
 
+if (NOT DEFINED $ENV{REPOS})
+	set($ENV{REPOS} "/work/pool/repos")
+endif()
+
 add_executable(
         run_tests
 
+		${CMAKE_CURRENT_SOURCE_DIR}/tests/run_tests.cpp
 		${CMAKE_CURRENT_SOURCE_DIR}/tests/test_glance_system.cpp
 		${CMAKE_CURRENT_SOURCE_DIR}/tests/test_gmp_poly.cpp
 		${CMAKE_CURRENT_SOURCE_DIR}/tests/test_parse_poly.cpp
@@ -31,7 +36,7 @@ add_executable(
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_glance.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_shot_calculation.cpp
 )
-target_link_libraries(run_tests PRIVATE Catch2::Catch2WithMain Eigen3::Eigen gmpxx gmp)
+target_link_libraries(run_tests PRIVATE Eigen3::Eigen gmpxx gmp)
 target_include_directories(
         run_tests
 
@@ -39,19 +44,19 @@ target_include_directories(
 
         ${PROJECT_SOURCE_DIR}/src
 
-#        ${CMAKE_CURRENT_SOURCE_DIR}/billiards-attempts-api/src
-#        ${CMAKE_CURRENT_SOURCE_DIR}/billiards-common/src
-#        ${CMAKE_CURRENT_SOURCE_DIR}/billiards-config-api/src
-#        ${CMAKE_CURRENT_SOURCE_DIR}/billiards-graphics-api/src
-#        ${CMAKE_CURRENT_SOURCE_DIR}/billiards-layouts/src
-#        ${CMAKE_CURRENT_SOURCE_DIR}/billiards-projection-api/src
-#        ${CMAKE_CURRENT_SOURCE_DIR}/billiards-shots-api/src
+        ${CMAKE_CURRENT_SOURCE_DIR}/billiards-attempts-api/src
+        ${CMAKE_CURRENT_SOURCE_DIR}/billiards-common/src
+        ${CMAKE_CURRENT_SOURCE_DIR}/billiards-config-api/src
+        ${CMAKE_CURRENT_SOURCE_DIR}/billiards-graphics-api/src
+        ${CMAKE_CURRENT_SOURCE_DIR}/billiards-layouts/src
+        ${CMAKE_CURRENT_SOURCE_DIR}/billiards-projection-api/src
+        ${CMAKE_CURRENT_SOURCE_DIR}/billiards-shots-api/src
 
         $ENV{REPOS}/billiards-scripts/ide/billiards-attempts-api/src
         $ENV{REPOS}/billiards-scripts/ide/billiards-common/src
         $ENV{REPOS}/billiards-scripts/ide/billiards-config-api/src
         $ENV{REPOS}/billiards-scripts/ide/billiards-graphics-api/src
-        $ENV{REPOS}/billiards-scripts/ide/billiards-layouts/src
+        $ENV{REPOS}/billiards-scripts/ide/billiards-layouts-api/src
         $ENV{REPOS}/billiards-scripts/ide/billiards-projection-api/src
         $ENV{REPOS}/billiards-scripts/ide/billiards-shots-api/src
 )
