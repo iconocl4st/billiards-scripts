@@ -27,6 +27,7 @@ add_executable(
         run_tests
 
 		${CMAKE_CURRENT_SOURCE_DIR}/tests/run_tests.cpp
+		${CMAKE_CURRENT_SOURCE_DIR}/tests/test_sparse_reduction.cpp
 		${CMAKE_CURRENT_SOURCE_DIR}/tests/test_glance_system.cpp
 		${CMAKE_CURRENT_SOURCE_DIR}/tests/test_gmp_poly.cpp
 		${CMAKE_CURRENT_SOURCE_DIR}/tests/test_parse_poly.cpp

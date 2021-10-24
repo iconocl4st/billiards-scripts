@@ -26,7 +26,7 @@ namespace billiards::shots::math {
 		int begin_index;
 
 		LocationsSystem()
-			: ideal{std::make_shared<Ideal>(cmp::Lexical)}
+			: ideal{std::make_shared<Ideal>(cmp::GradedReverseLexical/*Lexical*/)}
 			, impl{std::dynamic_pointer_cast<IndexImpl>(std::make_shared<VectorIndexImpl>(ideal))}
 			, system{}
 			, src_x{-1}, src_y{-1}
@@ -39,9 +39,9 @@ namespace billiards::shots::math {
 		friend std::ostream& operator<<(std::ostream& os, const LocationsSystem& s) {
 			os << *s.ideal << std::endl;
 			std::cout << std::endl;
-			os << "System:" << std::endl;
+			os << "\t\tSystem:" << std::endl;
 			for (int i = 0; i < (int) s.system.size(); i++) {
-				os << "\t\tpoly_" << i << " = " << s.system[i] << std::endl;
+				os << "poly_" << i << " = " << s.system[i] << std::endl;
 			}
 			return os;
 		}
@@ -151,10 +151,17 @@ namespace billiards::shots::math {
 		auto src_is_exit_1 = target_x - x;
 		auto src_is_exit_2 = target_y - y;
 
+
+		const auto& s1_index = s1->terms.begin()->first;
+
 		auto glance_1 = aim_x * alpha + tx * (1 - alpha) - dx;
 		auto glance_2 = aim_y * alpha + ty * (1 - alpha) - dy;
-		auto orth_req_1 = (aim_x - x) * (aim_x - tx) + (aim_y - y) * (aim_y - ty);
+		auto orth_req_1 = ((aim_x - x) * (aim_x - tx) + (aim_y - y) * (aim_y - ty))->div_out(s1_index);
 		auto radius_1 = (x - obj_x)->pow(2) + (y - obj_y)->pow(2) - std::pow(r1 + r2, 2);
+
+		std::cout << "The orthogonal requirement:" << std::endl;
+		std::cout << orth_req_1 << std::endl;
+		std::cout << "s1 = " << s1 << std::endl;
 
 		system.system.push_back(src_is_exit_1);
 		system.system.push_back(src_is_exit_2);
