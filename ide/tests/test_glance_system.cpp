@@ -7,6 +7,7 @@
 #include "algebra/parsing.h"
 #include "algebra/poly_divide.h"
 #include "algebra/alg/buchberger.h"
+#include "algebra/alg/f4.h"
 //#include "algebra/VariableNames.h"
 //#include "algebra/VarietyMatrix.h"
 #include "algebra/Variety.h"
@@ -100,6 +101,7 @@ using namespace algebra::poly;
 //	}
 //}
 //
+
 
 TEST_CASE("create solution", "[poly_divide]") {
 	std::random_device r;
@@ -202,19 +204,41 @@ TEST_CASE("create solution", "[poly_divide]") {
 	for (int i = 0; i < (int) simplified.size(); i++) {
 		std::cout << i << ": " << simplified[i] << std::endl;
 	}
+	simplify::print_present_vars(simplified);
+
 	std::cout << "Values after simplifying:" << std::endl;
 	for (int i = 0; i < (int) simplified.size(); i++) {
 		std::cout << i << ": " << simplified[i]->evaluate(values) << std::endl;
 	}
 
 //	std::vector<PolyPtr> basis{simplified};
+#if 0
 	std::vector<PolyPtr> basis{system.system};
 	buchberger(basis);
+#endif
+#if 1
+	auto basis = f4(simplified, [&](const PolyPtr& poly) {
+		double value = poly->evaluate(values);
+		if (std::abs(value) > 1) {
+			std::cout << "Encountered polynomial " << poly << std::endl;
+			throw std::runtime_error{"This polynomial is not in the ideal"};
+		}
+	});
+//	buchberger(basis);
+#endif
 
 	std::cout << "Computed basis:" << std::endl;
 	for (int i = 0; i < (int) basis.size(); i++) {
 		std::cout << i << ": " << basis[i] << std::endl;
 	}
+
+	std::cout << "Basis values:" << std::endl;
+	for (int i = 0; i < (int) basis.size(); i++) {
+		std::cout << i << ": " << basis[i]->evaluate(values) << std::endl;
+	}
+
+	simplify::print_present_vars(basis);
+
 
 
 //
