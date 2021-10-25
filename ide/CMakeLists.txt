@@ -36,8 +36,8 @@ add_executable(
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_systems.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_glance.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_shot_calculation.cpp
-)
-target_link_libraries(run_tests PRIVATE Eigen3::Eigen gmpxx gmp)
+        tests/test_mpfr.cpp)
+target_link_libraries(run_tests PRIVATE Eigen3::Eigen gmpxx gmp mpfr)
 target_include_directories(
         run_tests
 

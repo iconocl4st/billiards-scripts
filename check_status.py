@@ -13,11 +13,25 @@ repos = [
 	'billiards-common',
 	'billiards-config-api',
 	'billiards-graphics-api',
-	'billiards-image-processing-api',
+	#'billiards-image-processing-api',
 	'billiards-layouts-api',
 	'billiards-projection-api',
 	'billiards-scripts',
 	'billiards-shots-api'
+]
+
+BEGIN_WHITE_LIST = [
+	"src/",
+	"algebra/",
+	"ide/tests/",
+]
+
+CONTAIN_WHITE_LIST = [
+	'CMakeLists.txt',
+	'.gitignore',
+	'check_status.py',
+	'create_makefile.py',
+	'LICENSE',
 ]
 
 
@@ -30,16 +44,11 @@ def get_repos_dir():
 
 
 def should_commit_file(p):
-	if p.find('src/') == 0:
-		return True
-	for whitelist in [
-		'CMakeLists.txt',
-		'.gitignore',
-		'check_status.py',
-		'create_makefile.py',
-		'LICENSE',
-	]:
-		if whitelist in p:
+	for w in BEGIN_WHITE_LIST:
+		if p.find(w) == 0:
+			return True
+	for w in CONTAIN_WHITE_LIST:
+		if w in p:
 			return True
 	return False
 	

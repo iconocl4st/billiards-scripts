@@ -19,14 +19,14 @@
 using namespace algebra::poly;
 
 TEST_CASE("parse poly", "[parse_polynomial]") {
-	auto ideal = std::make_shared<Ideal>(cmp::Lexical);
-	ideal->register_var("x[0]");
-	ideal->register_var("x[1]");
-	auto impl = std::make_shared<VectorIndexImpl>(ideal);
-	PolyPtr p = parsing::parse_polynomial(impl, "-3x[0]^2 + 2 - 5 * x[1]");
-	std::stringstream ss;
-	ss << p;
-	REQUIRE(ss.str() == "2 + -5 * x[1] + -3 * x[0]^2");
+    auto ideal = std::make_shared<Ideal>(cmp::Lexical);
+    ideal->register_var("x[0]");
+    ideal->register_var("x[1]");
+    auto impl = std::make_shared<VectorIndexImpl>(ideal);
+    PolyPtr p = parsing::parse_polynomial(impl, "-3x[0]^2 + 2 - 5 * x[1]");
+    std::stringstream ss;
+    ss << p;
+    REQUIRE(ss.str() == "2 + -5 * x[1] + -3 * x[0]^2");
 }
 
 TEST_CASE("divide polynomials", "[poly_divide]") {
@@ -127,9 +127,13 @@ TEST_CASE("test substitute", "[substitute]") {
     auto vec_impl = std::make_shared<VectorIndexImpl>(ideal);
     auto impl = std::dynamic_pointer_cast<IndexImpl>(vec_impl);
     PolyPtr p1 = parsing::parse_polynomial(impl, "x[0]^3 - 2 * x[0] * x[1]");
-    PolyPtr p2 = parsing::parse_polynomial(impl, "x[0]^2 * x[1] - 2 * x[1]^2 + x[0]");
+    PolyPtr p2 = parsing::parse_polynomial(impl, "3 * x[0]^2 * x[1] - 2 * x[1]^2 + x[0] - x[1]");
 
-    simplify::
+    const auto ass = simplify::get_linear_assignment(p1, 1);
+    std::cout << *ass << std::endl;
+    PolyPtr p3 = ass->apply(p2);
+    std::cout << p3 << std::endl;
+    std::cout << p3->div_out(p3->gcd()) << std::endl;
 }
 
 
