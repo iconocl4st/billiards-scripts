@@ -1,0 +1,36 @@
+
+qemu-img create -f qcow2 hd.qcow2 2G
+
+
+unxz billiar...
+
+
+
+
+virt-make-fs ../output/tmp_dir/deploy/images/raspberrypi3/billiards-image-raspberrypi3.tar.xz hd.qcow2
+
+guestfish
+add hd.qcow2
+run
+mkfs ext4 /dev/sda
+mount /dev/sda /
+tar-in billiards-image-ra   /
+umount-all
+exit
+
+
+export TMPDIR="../output/tmp_dir.old"
+
+qemu-system-arm \
+	-machine raspi2 \
+	-kernel $(realpath $TMPDIR/deploy/images/raspberrypi3/zImage) \
+	-drive file=$(realpath hd.qcow2),index=0
+
+
+
+
+https://witekio.com/blog/5-steps-to-compile-yocto-using-docker-containers/
+https://www.novell.com/documentation/suse91/suselinux-adminguide/html/ch13s04.html
+https://www.xmodulo.com/mount-qcow2-disk-image-linux.html
+
+https://serverfault.com/questions/246835/convert-directory-to-qemu-kvm-virtual-disk-image

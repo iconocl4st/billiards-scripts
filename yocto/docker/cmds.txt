@@ -1,0 +1,25 @@
+
+export YOCTO_DIR="/work/pool/repos/billiards-scripts/yocto"
+
+sudo chmod a+w output/build_cache/
+sudo chmod a+w output/build_cache/conf/
+
+pushd $YOCTO_DIR/
+docker build -t yoctobuild -f $YOCTO_DIR/docker/Dockerfile $YOCTO_DIR/docker
+
+docker run -it --rm \
+	-v $YOCTO_DIR/output/tmp_dir:/yocto/output/tmp_dir \
+	-v $YOCTO_DIR/output/sstate_dir:/yocto/output/sstate_dir \
+	-v $YOCTO_DIR/output/dl_dir:/yocto/output/dl_dir \
+	-v $YOCTO_DIR/sources:/yocto/sources \
+	-v $YOCTO_DIR/output/build_cache:/yocto/build/ \
+	-v $YOCTO_DIR/build/conf:/yocto/build/conf \
+	--workdir=/yocto \
+	yoctobuild \
+	/bin/bash
+
+
+
+
+. sources/poky/oe-init-build-env
+bitbake billiards-image
