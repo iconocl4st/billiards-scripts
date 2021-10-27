@@ -91,12 +91,10 @@ target_include_directories(
 
 # TODO: rename shots and gphx
 # TODO: use Dimensions
-# TODO: make color use uint8_t
 # TODO: make consistent enums
 # TODO: make consistent serialization from subclasses
 # TODO: Maybe remove the destination?
 # TODO: check if shot is possible
-# TODO: Make necessary elements parsed by json
 # TODO: Make the layout fit the table
 # TODO: Place the pocket points in a nicer place
 # TODO: Only have one ghost ball (the center)
@@ -106,3 +104,12 @@ target_include_directories(
 # TODO: orient pocket has a bug where it widens the angle...
 # TODO: tests
 # TODO: Maybe go to eigen
+
+# TODO: add screen
+
+
+
+
+# TODO: Persist the configuration
+# TODO: have a more detailed image for calibration
+# TODO: Add the go pro image repo back in
