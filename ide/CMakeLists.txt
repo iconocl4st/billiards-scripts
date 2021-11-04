@@ -12,7 +12,7 @@ add_subdirectory(billiards-projection-api)
 add_subdirectory(billiards-shots-api)
 add_subdirectory(billiards-graphics-api)
 
-find_package(Boost COMPONENTS system REQUIRED)
+find_package(Boost COMPONENTS system filesystem REQUIRED)
 find_package(Catch2 2 REQUIRED hints "/usr/lib64/cmake/Catch2/")
 find_package(Eigen3 3.3 REQUIRED NO_MODULE)
 
@@ -36,8 +36,20 @@ add_executable(
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_systems.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_glance.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_shot_calculation.cpp
-        tests/test_mpfr.cpp)
-target_link_libraries(run_tests PRIVATE Eigen3::Eigen gmpxx gmp mpfr)
+        tests/test_mpfr.cpp
+		tests/test_boost_fs.cpp
+)
+
+target_link_libraries(
+	run_tests
+
+	PRIVATE
+
+	Eigen3::Eigen
+	gmpxx gmp mpfr
+	-lboost_filesystem -lboost_system
+)
+
 target_include_directories(
         run_tests
 
@@ -71,7 +83,7 @@ add_executable(
 #        ${CMAKE_CURRENT_SOURCE_DIR}/billiards-shots-api/src/math/orient_pocket_gen/gen_sol_2.c
 #        ${CMAKE_CURRENT_SOURCE_DIR}/billiards-shots-api/src/math/orient_pocket_gen/gen_sol_3.c
 
-)
+		billiards-config-api/src/ApiUrl.h billiards-config-api/src/get_default_host.h)
 
 target_include_directories(
         run_fragment
@@ -108,8 +120,15 @@ target_include_directories(
 # TODO: add screen
 
 
+# TODO: make the urls in the UI configurable
+# TODO: add systemd files for the other api's
 
 
 # TODO: Persist the configuration
 # TODO: have a more detailed image for calibration
 # TODO: Add the go pro image repo back in
+
+# TODO: make the client part of the yocto build
+# TODO: open up the ports, as part of the client build
+# TODO: enable sshd as part of the yocto build
+# TODO: get ip from config in client
