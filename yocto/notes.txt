@@ -20,7 +20,7 @@ sudo ./mk2parts.sh sdc
 
 sudo mkdir -p /media/card
 
-cd sources/meta-rpi/scripts/
+cd $YOCTO_DIR/sources/meta-rpi/scripts/
 
 
 # bootfs
@@ -30,12 +30,13 @@ export OETMP=$YOCTO_DIR/output/tmp_dir
 export MACHINE=raspberrypi3
 sudo MACHINE=raspberrypi3 OETMP=$YOCTO_DIR/output/tmp_dir ./copy_boot.sh sdc
 
-
-
-sudo mount /dev/sdc2 /media/card
-sudo cp wpa_supplicant.conf /media/card/etc/
-sudo chown root /media/card/etc/wpa_supplicant.conf
-sudo chmod +x /media/card/app/*
+# bootfs 4
+# sudo -i
+umount /dev/sdc1
+umount /dev/sdc2
+export OETMP=$YOCTO_DIR/output/pi4/tmp_dir/
+export MACHINE=raspberrypi4
+MACHINE=raspberrypi4 OETMP=$YOCTO_DIR/output/pi4/tmp_dir/ ./copy_boot.sh sdc
 
 
 
@@ -46,9 +47,12 @@ export OETMP=$YOCTO_DIR/output/tmp_dir
 export MACHINE=raspberrypi3
 sudo MACHINE=raspberrypi3 OETMP=$YOCTO_DIR/output/tmp_dir ./copy_rootfs.sh sdc billiards
 
-
-chmod +x /app/*
-vi /etc/wpa_supplicant.conf
+# rootfs 4
+umount /dev/sdc1
+umount /dev/sdc2
+export OETMP=$YOCTO_DIR/output/pi4/tmp_dir/
+export MACHINE=raspberrypi4
+sudo MACHINE=raspberrypi4 OETMP=$YOCTO_DIR/output/pi4/tmp_dir/ ./copy_rootfs.sh sdc billiards
 
 
 iptables -A INPUT -p tcp --dport 18080 -j ACCEPT
@@ -58,6 +62,8 @@ iptables -A INPUT -p tcp --dport 18083 -j ACCEPT
 iptables -A INPUT -p tcp --dport 18084 -j ACCEPT
 iptables -A INPUT -p tcp --dport 18085 -j ACCEPT
 iptables -A INPUT -p tcp --dport 18086 -j ACCEPT
+
+
 iptables -A INPUT -p tcp --dport 80 -j ACCEPT
 
 
@@ -66,7 +72,11 @@ pushd $REPOS/billiards-client
 npm run build
 popd
 
-scp -r $REPOS/billiards-client/build/* root@10.0.0.160:/var/www/monkey
+scp -r $REPOS/billiards-client/build/* root@10.0.0.141:/var/www/monkey
+
+vi /etc/monkey/monkey.conf
+systemctl restart monkey.service
+
 
 
 
@@ -81,9 +91,6 @@ rm -rf tmp
 
 
 
-
-
-
 NOT USED:
 
 cp $YOCTO_DIR/conf/bblayers.conf $YOCTO_DIR/build/conf/
@@ -94,10 +101,8 @@ cp $YOCTO_DIR/build/conf/bblayers.conf $YOCTO_DIR/conf/
 cp $YOCTO_DIR/build/conf/local.conf $YOCTO_DIR/conf/
 
 
-
-
-
-
 follow:
 https://wiki.archlinux.org/title/systemd-networkd
+
+
 

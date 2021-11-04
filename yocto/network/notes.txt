@@ -1,0 +1,31 @@
+
+
+
+export YOCTO_DIR=/work/pool/repos/billiards-scripts/yocto
+cd $YOCTO_DIR/
+sudo mount /dev/sdc2 /media/card
+sudo cp network/wlan0.network /media/card/etc/systemd/network/
+sudo mkdir /media/card/etc/wpa_supplicant/
+sudo cp network/wpa_supplicant.conf /media/card/etc/wpa_supplicant/wpa_supplicant-wlan0.conf
+sudo umount /media/card
+
+
+
+
+systemctl enable wpa_supplicant@wlan0
+systemctl enable sshd.socket
+
+
+
+
+systemctl enable monkey
+
+
+
+
+
+
+sudo cp wpa_supplicant.conf /media/card/etc/wpa_supplicant/wpa_supplicant-wlan0.conf
+sudo chown root /media/card/etc/wpa_supplicant.conf
+sudo chmod +x /media/card/app/qt-projection-api
+
