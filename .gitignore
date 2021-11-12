@@ -8,6 +8,7 @@ build/qt-projection/
 build/native/
 prefix/app/
 prefix/native/
+prefix/libs/
 scripts/node-app/node_modules/
 scripts/node-app/package-lock.json
 old
@@ -35,4 +36,4 @@ sage/scripts/output.c
 **/*.kate-swp
 scripts/node-app/inputs/
 testing/
-
+3rd_party/
