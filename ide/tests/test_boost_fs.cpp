@@ -5,29 +5,9 @@
 
 #include "catch2/catch.hpp"
 
-#include <iostream>
-#include <boost/filesystem.hpp>
+#include "billiards_common/utils/fs.h"
 
-
-bool ensure_directory(const std::string& path) {
-    boost::filesystem::path dir{path};
-    if (!boost::filesystem::exists(dir)) {
-        boost::filesystem::create_directories(dir);
-    }
-    return boost::filesystem::is_directory(dir);
-}
-
-void list_directory(const std::string& path, const std::function<void(const std::string&)>& rec) {
-    if (!ensure_directory(path)) {
-        return;
-    }
-    boost::filesystem::path dir{path};
-    for (auto& child : boost::filesystem::directory_iterator(dir)) {
-        rec(child.path().string());
-    }
-}
-
-
+using namespace billiards::utils;
 
 TEST_CASE("ensure directory of file", "[ensure_directory]") {
     const auto b = ensure_directory("/work/pool/repos/billiards-scripts/Makefile");

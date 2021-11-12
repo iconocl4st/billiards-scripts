@@ -38,7 +38,7 @@ add_executable(
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_shot_calculation.cpp
         tests/test_mpfr.cpp
 		tests/test_boost_fs.cpp
-)
+        tests/test_layout_manager.cpp tests/test_mongodb.cpp)
 
 target_link_libraries(
 	run_tests
@@ -48,6 +48,13 @@ target_link_libraries(
 	Eigen3::Eigen
 	gmpxx gmp mpfr
 	-lboost_filesystem -lboost_system
+	unqlite
+)
+
+target_link_directories(
+	run_tests
+	PRIVATE
+	/work/pool/repos/billiards-scripts/prefix/libs/lib64
 )
 
 target_include_directories(
@@ -55,13 +62,15 @@ target_include_directories(
 
         PUBLIC
 
+		/work/pool/repos/billiards-scripts/prefix/libs/include
+
         ${PROJECT_SOURCE_DIR}/src
 
         ${CMAKE_CURRENT_SOURCE_DIR}/billiards-attempts-api/src
         ${CMAKE_CURRENT_SOURCE_DIR}/billiards-common/src
         ${CMAKE_CURRENT_SOURCE_DIR}/billiards-config-api/src
         ${CMAKE_CURRENT_SOURCE_DIR}/billiards-graphics-api/src
-        ${CMAKE_CURRENT_SOURCE_DIR}/billiards-layouts/src
+        ${CMAKE_CURRENT_SOURCE_DIR}/billiards-layouts-api/src
         ${CMAKE_CURRENT_SOURCE_DIR}/billiards-projection-api/src
         ${CMAKE_CURRENT_SOURCE_DIR}/billiards-shots-api/src
 

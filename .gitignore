@@ -34,4 +34,5 @@ sage/exp.pdf
 sage/scripts/output.c
 **/*.kate-swp
 scripts/node-app/inputs/
+testing/
 
