@@ -39,4 +39,5 @@ docker run -it --rm \
 
 
 . sources/poky/oe-init-build-env
+
 bitbake billiards-image

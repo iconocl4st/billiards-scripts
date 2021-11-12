@@ -84,6 +84,9 @@ mkdir tmp
 pushd tmp
 cp $(realpath $REPOS/billiards-scripts/yocto/output/tmp_dir/deploy/images/raspberrypi3/billiards-image-raspberrypi3.tar.xz
 ) .
+
+cp /work/pool/repos/billiards-scripts/yocto/output/pi4/tmp_dir/deploy/images/raspberrypi4/billiards-image-raspberrypi4.tar.xz .
+
 tar xf billiards-*
 scp ./app/qt-projection-api root@10.0.0.160:/app/qt-projection-api
 popd
@@ -104,5 +107,10 @@ cp $YOCTO_DIR/build/conf/local.conf $YOCTO_DIR/conf/
 follow:
 https://wiki.archlinux.org/title/systemd-networkd
 
+
+
+
+To get graphics to work:
+QT_QPA_EGLFS_ALWAYS_SET_MODE="1"
 
 

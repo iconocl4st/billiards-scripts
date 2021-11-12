@@ -9,5 +9,11 @@ RUN apk add gcc
 RUN apk add make
 RUN apk add cmake
 RUN apk add eigen-dev
+
+COPY build_unsqlite.sh /home/ubuntu/
+RUN ls /home/ubuntu/
+RUN /home/ubuntu/build_unsqlite.sh
+
+
 # --no-cache
 
