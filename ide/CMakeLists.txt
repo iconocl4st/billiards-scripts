@@ -27,18 +27,21 @@ add_executable(
         run_tests
 
 		${CMAKE_CURRENT_SOURCE_DIR}/tests/run_tests.cpp
-		${CMAKE_CURRENT_SOURCE_DIR}/tests/test_sparse_reduction.cpp
-		${CMAKE_CURRENT_SOURCE_DIR}/tests/test_glance_system.cpp
-		${CMAKE_CURRENT_SOURCE_DIR}/tests/test_gmp_poly.cpp
-		${CMAKE_CURRENT_SOURCE_DIR}/tests/test_parse_poly.cpp
-		${CMAKE_CURRENT_SOURCE_DIR}/tests/test_higher_order_polys.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_polynomials.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_systems.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_glance.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_shot_calculation.cpp
-        tests/test_mpfr.cpp
-		tests/test_boost_fs.cpp
-        tests/test_layout_manager.cpp tests/test_mongodb.cpp)
+#		${CMAKE_CURRENT_SOURCE_DIR}/tests/test_sparse_reduction.cpp
+#		${CMAKE_CURRENT_SOURCE_DIR}/tests/test_glance_system.cpp
+#		${CMAKE_CURRENT_SOURCE_DIR}/tests/test_gmp_poly.cpp
+#		${CMAKE_CURRENT_SOURCE_DIR}/tests/test_parse_poly.cpp
+#		${CMAKE_CURRENT_SOURCE_DIR}/tests/test_higher_order_polys.cpp
+#        ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_polynomials.cpp
+#        ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_systems.cpp
+#        ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_glance.cpp
+#        ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_shot_calculation.cpp
+#		${CMAKE_CURRENT_SOURCE_DIR}/tests/test_mpfr.cpp
+#		${CMAKE_CURRENT_SOURCE_DIR}/tests/test_boost_fs.cpp
+#		${CMAKE_CURRENT_SOURCE_DIR}/tests/test_layout_manager.cpp
+#		${CMAKE_CURRENT_SOURCE_DIR}/tests/test_mongodb.cpp
+		${CMAKE_CURRENT_SOURCE_DIR}/tests/test_triangulation.cpp
+)
 
 target_link_libraries(
 	run_tests
@@ -58,55 +61,55 @@ target_link_directories(
 )
 
 target_include_directories(
-        run_tests
+	run_tests
 
-        PUBLIC
+    PUBLIC
 
-		/work/pool/repos/billiards-scripts/prefix/libs/include
+	/work/pool/repos/billiards-scripts/prefix/libs/include
 
-        ${PROJECT_SOURCE_DIR}/src
+    ${PROJECT_SOURCE_DIR}/src
 
-        ${CMAKE_CURRENT_SOURCE_DIR}/billiards-attempts-api/src
-        ${CMAKE_CURRENT_SOURCE_DIR}/billiards-common/src
-        ${CMAKE_CURRENT_SOURCE_DIR}/billiards-config-api/src
-        ${CMAKE_CURRENT_SOURCE_DIR}/billiards-graphics-api/src
-        ${CMAKE_CURRENT_SOURCE_DIR}/billiards-layouts-api/src
-        ${CMAKE_CURRENT_SOURCE_DIR}/billiards-projection-api/src
-        ${CMAKE_CURRENT_SOURCE_DIR}/billiards-shots-api/src
+    ${CMAKE_CURRENT_SOURCE_DIR}/billiards-attempts-api/src
+    ${CMAKE_CURRENT_SOURCE_DIR}/billiards-common/src
+    ${CMAKE_CURRENT_SOURCE_DIR}/billiards-config-api/src
+    ${CMAKE_CURRENT_SOURCE_DIR}/billiards-graphics-api/src
+    ${CMAKE_CURRENT_SOURCE_DIR}/billiards-layouts-api/src
+    ${CMAKE_CURRENT_SOURCE_DIR}/billiards-projection-api/src
+    ${CMAKE_CURRENT_SOURCE_DIR}/billiards-shots-api/src
 
-        $ENV{REPOS}/billiards-scripts/ide/billiards-attempts-api/src
-        $ENV{REPOS}/billiards-scripts/ide/billiards-common/src
-        $ENV{REPOS}/billiards-scripts/ide/billiards-config-api/src
-        $ENV{REPOS}/billiards-scripts/ide/billiards-graphics-api/src
-        $ENV{REPOS}/billiards-scripts/ide/billiards-layouts-api/src
-        $ENV{REPOS}/billiards-scripts/ide/billiards-projection-api/src
-        $ENV{REPOS}/billiards-scripts/ide/billiards-shots-api/src
+    $ENV{REPOS}/billiards-scripts/ide/billiards-attempts-api/src
+    $ENV{REPOS}/billiards-scripts/ide/billiards-common/src
+    $ENV{REPOS}/billiards-scripts/ide/billiards-config-api/src
+    $ENV{REPOS}/billiards-scripts/ide/billiards-graphics-api/src
+    $ENV{REPOS}/billiards-scripts/ide/billiards-layouts-api/src
+    $ENV{REPOS}/billiards-scripts/ide/billiards-projection-api/src
+    $ENV{REPOS}/billiards-scripts/ide/billiards-shots-api/src
 )
 
 add_executable(
-        run_fragment
+	run_fragment
 
-        ${CMAKE_CURRENT_SOURCE_DIR}/run_fragments/run_fragment.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/run_fragments/run_fragment.cpp
 #        ${CMAKE_CURRENT_SOURCE_DIR}/billiards-shots-api/src/math/orient_pocket_gen/gen_sol_0.c
 #        ${CMAKE_CURRENT_SOURCE_DIR}/billiards-shots-api/src/math/orient_pocket_gen/gen_sol_1.c
 #        ${CMAKE_CURRENT_SOURCE_DIR}/billiards-shots-api/src/math/orient_pocket_gen/gen_sol_2.c
 #        ${CMAKE_CURRENT_SOURCE_DIR}/billiards-shots-api/src/math/orient_pocket_gen/gen_sol_3.c
 
-		billiards-config-api/src/ApiUrl.h billiards-config-api/src/get_default_host.h)
+	billiards-config-api/src/ApiUrl.h billiards-config-api/src/get_default_host.h)
 
 target_include_directories(
-        run_fragment
+    run_fragment
 
-        PUBLIC
+    PUBLIC
 
-        ${PROJECT_SOURCE_DIR}/src
-        $ENV{REPOS}/billiards-scripts/ide/billiards-attempts-api/src
-        $ENV{REPOS}/billiards-scripts/ide/billiards-common/src
-        $ENV{REPOS}/billiards-scripts/ide/billiards-config-api/src
-        $ENV{REPOS}/billiards-scripts/ide/billiards-graphics-api/src
-        $ENV{REPOS}/billiards-scripts/ide/billiards-layouts/src
-        $ENV{REPOS}/billiards-scripts/ide/billiards-projection-api/src
-        $ENV{REPOS}/billiards-scripts/ide/billiards-shots-api/src
+    ${PROJECT_SOURCE_DIR}/src
+    $ENV{REPOS}/billiards-scripts/ide/billiards-attempts-api/src
+    $ENV{REPOS}/billiards-scripts/ide/billiards-common/src
+    $ENV{REPOS}/billiards-scripts/ide/billiards-config-api/src
+    $ENV{REPOS}/billiards-scripts/ide/billiards-graphics-api/src
+    $ENV{REPOS}/billiards-scripts/ide/billiards-layouts/src
+    $ENV{REPOS}/billiards-scripts/ide/billiards-projection-api/src
+    $ENV{REPOS}/billiards-scripts/ide/billiards-shots-api/src
 )
 
 
@@ -141,3 +144,19 @@ target_include_directories(
 # TODO: open up the ports, as part of the client build
 # TODO: enable sshd as part of the yocto build
 # TODO: get ip from config in client
+
+
+# Remove all the 92, 46's
+# Projection now depends on eigen
+
+
+
+# TODO: use optionals intead of defaults....
+
+
+
+# Remove the shot specific methods
+
+
+
+# Remove indentation in api files

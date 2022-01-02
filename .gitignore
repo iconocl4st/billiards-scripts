@@ -37,3 +37,6 @@ sage/scripts/output.c
 scripts/node-app/inputs/
 testing/
 3rd_party/
+
+
+yocto/tmp/
