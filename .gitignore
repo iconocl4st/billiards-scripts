@@ -40,3 +40,5 @@ testing/
 
 
 yocto/tmp/
+mapping.json
+
