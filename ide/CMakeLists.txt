@@ -132,17 +132,9 @@ target_include_directories(
 # TODO: add screen
 
 
-# TODO: make the urls in the UI configurable
-# TODO: add systemd files for the other api's
-
-
-# TODO: Persist the configuration
 # TODO: have a more detailed image for calibration
 # TODO: Add the go pro image repo back in
 
-# TODO: make the client part of the yocto build
-# TODO: open up the ports, as part of the client build
-# TODO: enable sshd as part of the yocto build
 # TODO: get ip from config in client
 
 
@@ -160,3 +152,5 @@ target_include_directories(
 
 
 # Remove indentation in api files
+
+# Remove the ability to configure the pockets...
